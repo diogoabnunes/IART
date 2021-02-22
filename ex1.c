@@ -1,6 +1,7 @@
 // Objetivo: manter temperatura entre 22 e 24 graus.
 // TS: T1 (temperatura interior).
 // TE: T2 (temperatura exterior).
+// Pseudocódigo em C
 
 int TS, TE;
 
@@ -12,7 +13,6 @@ int TS, TE;
 #define FORA_UTIL ((TE < 24 && QUENTE) || (TE > 22 && FRIO))
 
 void AQ() {  // Ligar aquecedor
-
 }
 void NAQ() { // Desligar aquecedor
 }
@@ -52,7 +52,10 @@ void controlex(TS, TE) {
 }
 
 void main() {
+	int TS, TE;
     for (;;) {
-
+    	TS = getTS();
+    	TE = getTE();
+		controlex(TS, TE);
     }
 }
