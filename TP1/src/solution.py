@@ -16,5 +16,6 @@ if __name__ == "__main__":
     startTime = time.time()
     blueprint = blueprint.Blueprint("../inputs/example.in")
     blueprint.print()
+    print(blueprint.getNeighbours((2,2)))
     endTime = time.time()
     print(f"Time: {endTime - startTime} seconds")
