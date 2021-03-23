@@ -9,6 +9,14 @@ def distance(pointA, pointB):
 
 def aStar(startCoord, endCoord, blueprint):
     """    Params are tuples """
-    heap = []
+    heap = [(distance(startCoord, endCoord), startCoord)]
     heapq.heapify(heap)   
+    
+    while heap:
+        currentDist, currentPos = heapq.heappop(heap)
+        if currentDist == 0:
+        neighbours = blueprint.getNeighbours(currentPos)
+        for n in neighbours:
+            heapq.heappush(heap, (distance(n, endCoord), n))
+
 
