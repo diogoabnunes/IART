@@ -10,7 +10,11 @@ def distance(pointA, pointB):
     return sqrt((pointA[0] - pointB[0])**2 + (pointA[1] - pointB[1])**2)
 
 def aStar(startCoord, endCoord, blueprint):
-    """    Params are tuples """
+    """ Calculates the shortest paths between 2 points.
+        Params: startCoord - tuple
+            endCoord - tuple
+            blueprint - class Blueprint
+    """
     
     if (not blueprint.validPosition(startCoord)) or (not blueprint.validPosition(endCoord)): return None
     

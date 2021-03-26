@@ -94,6 +94,10 @@ class Blueprint:
         return result
     
     def atGrid(self, x, y = None):
+        """
+        Returns the content of a position of the grid.
+        Accepts one parameter only when it's a tuple
+        """
         try:
             if type(x) == tuple:
                 return self.grid[x[1]][x[0]]
@@ -102,6 +106,10 @@ class Blueprint:
             return False
         
     def atVisitedGrid(self, x, y = None):
+        """
+        Return true if the cell has been visited, false otherwise. If there is an error returns None.
+        Accepts one parameter only when it's a tuple
+        """
         try:
             if type(x) == tuple:
                 return self.gridVisited[x[1]][x[0]]
@@ -110,12 +118,18 @@ class Blueprint:
             return None
     
     def validPosition(self, x, y = None):
+        """
+        Checks if a position is valid and doesn't have a wall.
+        """
         atGrid = self.atGrid(x, y)
         if (atGrid == False): 
             return False
         return atGrid != '#'
     
     def visit(self, x, y = None):
+        """
+        Mark a cell as visited
+        """
         try:
             if type(x) == tuple:
                 self.gridVisited[x[1]][x[0]] = True
@@ -126,6 +140,9 @@ class Blueprint:
             return None
         
     def clearVisited(self):
+        """
+        Resets visited cells
+        """
         gridVisited = []
         for i in range(self.size[1]):
             rowVisited = []
@@ -135,6 +152,11 @@ class Blueprint:
         self.gridVisited = gridVisited
             
         
+
+
+
+
+
         
                     
             
