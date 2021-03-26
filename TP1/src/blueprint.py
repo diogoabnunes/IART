@@ -1,6 +1,9 @@
 """
 Blueprint class
 """
+from math import sqrt
+import time
+import heapq
 
 class Blueprint:
     def __init__(self, filename):
@@ -17,6 +20,7 @@ class Blueprint:
             self.routerCost = Pr
             self.budget = B
             self.backbonePosition = (bc, br)
+            self.paths = {}
 
             grid = []
             gridVisited = []
@@ -150,15 +154,18 @@ class Blueprint:
                 rowVisited.append(False)
             gridVisited.append(rowVisited)
         self.gridVisited = gridVisited
-        
-   
+    
+    def reset(self):
+        self.clearVisited()
+        self.paths = {}
+
     def printPath(self, returnFromAStar):
         path, dist = returnFromAStar
         print("Distance: " + str(dist))
         
         gridToPrint = self.grid.copy()
         for coord in path:
-            self.setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
             
         rowsInStr = []
         for row in gridToPrint:
@@ -166,37 +173,78 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def setGridContent(grid, content, x, y = None):
-        try:
-            if type(x) == tuple:
-                grid[x[1]][x[0]] = content
-                return
-            grid[y][x] = content
-            return
-        except IndexError:
-            return None
-
-    def getNumCables(): # toChange
-        return 1
-    
-    def getNumRouters(): #toChange
-        return 1
-    
-    def targetCellsCovered(): #toChange
-        return 1
-
     def score(self):
-        
         N = self.getNumCables()
         M = self.getNumRouters()
         t = self.targetCellsCovered()
-        
         return 1000 * t + (self.B - (N * self.Pb + M * self.Pr))
 
-    def checkBudget(self):    
+    def checkBudget(self):
         N = self.getNumCables()
         M = self.getNumRouters()
-        
         return N * self.Pb + M * self.Pr <= self.B
+
+    def aStar(self, startCoord, endCoord):
+        """ Calculates the shortest paths between 2 points.
+            Params: startCoord - tuple
+                endCoord - tuple
+                blueprint - class Blueprint
+        """
+        
+        if (not self.validPosition(startCoord)) or (not self.validPosition(endCoord)): return None
+
+        heap = [(distance(startCoord, endCoord), startCoord)]
+        heapq.heapify(heap)   
+        resultPath, pathDist = [], 0
+        while heap:
+            currentDist, currentPos = heapq.heappop(heap)
+            if self.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expected position!")
+            if self.atVisitedGrid(currentPos): continue
+
+            self.visit(currentPos)
+            if currentDist == 0:
+                resultPath.append(currentPos)
+                return resultPath, pathDist
+            
+            pathDist += 1
+            resultPath.append(currentPos)
+            
+            neighbours = self.getNeighbours(currentPos)
+            for n in neighbours:
+                heapq.heappush(heap, (distance(n, endCoord), n))
+                
+        return None
+
+    def calculateAllPaths(self, endCoord):
+        self.paths = {}
+        for i in range(self.size[0]):
+            for j in range(self.size[1]):
+                if not self.validPosition(i, j): continue
+                self.paths[(i, j)] = self.aStar((i,j), endCoord)
+
+# Blueprint end
+
+def distance(pointA, pointB):
+    return sqrt((pointA[0] - pointB[0])**2 + (pointA[1] - pointB[1])**2)
+
+def setGridContent(grid, content, x, y = None):
+    try:
+        if type(x) == tuple:
+            grid[x[1]][x[0]] = content
+            return
+        grid[y][x] = content
+        return
+    except IndexError:
+        return None
+
+
+if __name__ == "__main__":
+    startTime = time.process_time()
+    blueprint = Blueprint("./inputs/example.in")
+    blueprint.clearVisited()
     
-    
+    # blueprint.printPath(blueprint.aStar((3, 2), (17, 2)))
+    blueprint.calculateAllPaths((1, 1))
+    endTime = time.process_time()
+    print(f"Time: {endTime - startTime} seconds")
+    blueprint.reset()
