@@ -5,31 +5,31 @@ Blueprint class
 class Blueprint:
     def __init__(self, filename):
         with open(filename) as file:
-                file = file.read().split("\n") # Separated in lines
-                
-                [H, W, R] = [int(x) for x in file[0].split()]
-                [Pb, Pr, B] = [int(x) for x in file[1].split()]
-                [br, bc] = [int(x) for x in file[2].split()]
-                
-                self.size = (W, H)
-                self.routerRadius = R
-                self.backboneCost = Pb
-                self.routerCost = Pr
-                self.budget = B
-                self.backbonePosition = (bc, br)
+            file = file.read().split("\n") # Separated in lines
+            
+            [H, W, R] = [int(x) for x in file[0].split()]
+            [Pb, Pr, B] = [int(x) for x in file[1].split()]
+            [br, bc] = [int(x) for x in file[2].split()]
+            
+            self.size = (W, H)
+            self.routerRadius = R
+            self.backboneCost = Pb
+            self.routerCost = Pr
+            self.budget = B
+            self.backbonePosition = (bc, br)
 
-                grid = []
-                gridVisited = []
-                for i in range(H):
-                    row = []
-                    rowVisited = []
-                    for j in range(W):
-                        row.append(file[i+3][j])
-                        rowVisited.append(False)
-                    grid.append(row)
-                    gridVisited.append(rowVisited)
-                self.grid = grid
-                self.gridVisited = gridVisited
+            grid = []
+            gridVisited = []
+            for i in range(H):
+                row = []
+                rowVisited = []
+                for j in range(W):
+                    row.append(file[i+3][j])
+                    rowVisited.append(False)
+                grid.append(row)
+                gridVisited.append(rowVisited)
+            self.grid = grid
+            self.gridVisited = gridVisited
     
     def printGrid(self):   
         rowsInStr = []
@@ -150,7 +150,8 @@ class Blueprint:
                 rowVisited.append(False)
             gridVisited.append(rowVisited)
         self.gridVisited = gridVisited
-            
+        
+
         
 
 
