@@ -109,7 +109,7 @@ class Blueprint:
         except IndexError:
             return None
     
-    def validPosition(self, x, y = None):
+    def validPosition(self, x, y = None): # Not a wall and not out of bounds
         atGrid = self.atGrid(x, y)
         if (atGrid == False): 
             return False

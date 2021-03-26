@@ -19,7 +19,7 @@ def aStar(startCoord, endCoord, blueprint):
     resultPath, pathDist = [], 0
     while heap:
         currentDist, currentPos = heapq.heappop(heap)
-        if blueprint.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expectedd position!")
+        if blueprint.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expected position!")
         if not blueprint.atVisitedGrid(currentPos): continue
         blueprint.visit(currentPos)
         if currentDist == 0:
