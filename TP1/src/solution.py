@@ -10,7 +10,7 @@ bc: Column of initial cell that is already connected to the backbone
 '''
 
 import time
-import blueprint
+import blueprint as bp
 import paths
 
 def simulatedAnnealing():
@@ -61,9 +61,9 @@ def menu():
         
         if val == str(1):
             simulatedAnnealing()
-            bp = blueprint.Blueprint(file)
-            bp.print()
-            print(paths.aStar((2,2), (9,2), bp))
+            blueprint = bp.Blueprint(file)
+            blueprint.print()
+            print(paths.aStar((2,2), (9,2), blueprint))
         elif val == str(2): hillClimbing()
         elif val == str(3): geneticAlgorithm()
         elif val == str(4): tabuSearch()

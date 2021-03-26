@@ -155,6 +155,31 @@ class Blueprint:
     def printPath(self, path):
         return
     
+   
+    def printPath(self, returnFromAStar):
+        path, dist = returnFromAStar
+        print("Distance: " + str(dist))
+        
+        gridToPrint = self.grid.copy()
+        for coord in path:
+            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+            
+        rowsInStr = []
+        for row in gridToPrint:
+            rowsInStr.append(''.join(row))
+        gridStr = '\n'.join(rowsInStr)
+        print(gridStr)
+
+    def setGridContent(grid, content, x, y = None):
+        try:
+            if type(x) == tuple:
+                grid[x[1]][x[0]] = content
+                return
+            grid[y][x] = content
+            return
+        except IndexError:
+            return None
+
     def getNumCables(): # toChange
         return 1
     
@@ -172,10 +197,9 @@ class Blueprint:
         
         return 1000 * t + (self.B - (N * self.Pb + M * self.Pr))
 
-    def checkBudget(self):
-        
+    def checkBudget(self):    
         N = self.getNumCables()
-        M = self.getNumRouters();
+        M = self.getNumRouters()
         
         return N * self.Pb + M * self.Pr <= self.B
     
