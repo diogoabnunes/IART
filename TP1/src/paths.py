@@ -17,7 +17,7 @@ def aStar(startCoord, endCoord, blueprint):
     """
     
     if (not blueprint.validPosition(startCoord)) or (not blueprint.validPosition(endCoord)): return None
-    print(blueprint.gridVisited)
+
     heap = [(distance(startCoord, endCoord), startCoord)]
     heapq.heapify(heap)   
     resultPath, pathDist = [], 0
