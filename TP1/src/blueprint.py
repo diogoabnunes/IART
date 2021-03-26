@@ -19,12 +19,17 @@ class Blueprint:
                 self.backbonePosition = (bc, br)
 
                 grid = []
+                gridVisited = []
                 for i in range(H):
                     row = []
+                    rowVisited = []
                     for j in range(W):
                         row.append(file[i+3][j])
+                        rowVisited.append(False)
                     grid.append(row)
+                    gridVisited.append(rowVisited)
                 self.grid = grid
+                self.gridVisited = gridVisited
     
     def printGrid(self):   
         rowsInStr = []
@@ -80,14 +85,55 @@ class Blueprint:
         result = []
         for n in neighbours:
             position = (coord[0] + n[0], coord[1] + n[1])
-            if self.grid[position[0]][position[1]] != "#":
+            if self.grid[position[1]][position[0]] != "#":
                 try:
                     result.append(position)
                 except:
                     pass
         
         return result
-
+    
+    def atGrid(self, x, y = None):
+        try:
+            if type(x) == tuple:
+                return self.grid[x[1]][x[0]]
+            return self.grid[y][x]
+        except IndexError:
+            return False
+        
+    def atVisitedGrid(self, x, y = None):
+        try:
+            if type(x) == tuple:
+                return self.gridVisited[x[1]][x[0]]
+            return self.gridVisited[y][x]
+        except IndexError:
+            return None
+    
+    def validPosition(self, x, y = None):
+        atGrid = self.atGrid(x, y)
+        if (atGrid == False): 
+            return False
+        return atGrid != '#'
+    
+    def visit(self, x, y = None):
+        try:
+            if type(x) == tuple:
+                self.gridVisited[x[1]][x[0]] = True
+                return
+            self.gridVisited[y][x] = True
+            return
+        except IndexError:
+            return None
+        
+    def clearVisited(self):
+        gridVisited = []
+        for i in range(self.size[1]):
+            rowVisited = []
+            for j in range(self.size[0]):
+                rowVisited.append(False)
+            gridVisited.append(rowVisited)
+        self.gridVisited = gridVisited
+            
         
         
                     

@@ -2,6 +2,8 @@
 Path finding algorithms and precomputation of the blueprint
 """
 from math import sqrt
+import time
+import blueprint
 import heapq
 
 def distance(pointA, pointB):
@@ -9,12 +11,17 @@ def distance(pointA, pointB):
 
 def aStar(startCoord, endCoord, blueprint):
     """    Params are tuples """
+    
+    if (not blueprint.validPosition(startCoord)) or (not blueprint.validPosition(endCoord)): return None
+    
     heap = [(distance(startCoord, endCoord), startCoord)]
     heapq.heapify(heap)   
     resultPath, pathDist = [], 0
     while heap:
         currentDist, currentPos = heapq.heappop(heap)
-        
+        if blueprint.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expectedd position!")
+        if not blueprint.atVisitedGrid(currentPos): continue
+        blueprint.visit(currentPos)
         if currentDist == 0:
             resultPath.append(currentPos)
             return resultPath, pathDist
@@ -27,3 +34,14 @@ def aStar(startCoord, endCoord, blueprint):
             heapq.heappush(heap, (distance(n, endCoord), n))
             
     return None
+
+
+
+if __name__ == "__main__":
+    startTime = time.time()
+    blueprint = blueprint.Blueprint("../inputs/example.in")
+    blueprint.print()
+    
+    print(aStar((2,2), (9,2), blueprint))
+    endTime = time.time()
+    print(f"Time: {endTime - startTime} seconds")

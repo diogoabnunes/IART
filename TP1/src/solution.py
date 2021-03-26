@@ -16,8 +16,8 @@ import paths
 if __name__ == "__main__":
     startTime = time.time()
     blueprint = blueprint.Blueprint("../inputs/example.in")
-    # blueprint.print()
+    blueprint.print()
     
-    print(paths.aStar((3,3), (5,5), blueprint))
+    print(paths.aStar((2,2), (9,2), blueprint))
     endTime = time.time()
     print(f"Time: {endTime - startTime} seconds")
