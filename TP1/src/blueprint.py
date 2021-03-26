@@ -152,11 +152,30 @@ class Blueprint:
         self.gridVisited = gridVisited
         
 
-    def printPath(self, path):
+    def printPath(self, returnFromAStar):
+        path, dist = returnFromAStar
+        print("Distance: " + str(dist))
+        
+        gridToPrint = self.grid.copy()
+        for coord in path:
+            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+            
+        rowsInStr = []
+        for row in gridToPrint:
+            rowsInStr.append(''.join(row))
+        gridStr = '\n'.join(rowsInStr)
+        print(gridStr)
+
+
+def setGridContent(grid, content, x, y = None):
+    try:
+        if type(x) == tuple:
+            grid[x[1]][x[0]] = content
+            return
+        grid[y][x] = content
         return
-
-
-
+    except IndexError:
+        return None
 
 
         

@@ -3,7 +3,7 @@ Path finding algorithms and precomputation of the blueprint
 """
 from math import sqrt
 import time
-import blueprint
+import blueprint as bp
 import heapq
 
 def distance(pointA, pointB):
@@ -43,10 +43,11 @@ def aStar(startCoord, endCoord, blueprint):
 
 if __name__ == "__main__":
     startTime = time.time()
-    blueprint = blueprint.Blueprint("../inputs/example.in")
-    blueprint.print()
+    blueprint = bp.Blueprint("../inputs/example.in")
+    blueprint.clearVisited()
     
-    print(aStar((3, 3), (4, 3), blueprint))
+    blueprint.printPath(aStar((3, 2), (17, 2), blueprint))
+    
     endTime = time.time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.clearVisited()
