@@ -44,7 +44,7 @@ def aStar(startCoord, endCoord, blueprint):
 
 if __name__ == "__main__":
     startTime = time.time()
-    blueprint = bp.Blueprint("../inputs/example.in")
+    blueprint = bp.Blueprint("./inputs/example.in")
     blueprint.clearVisited()
     
     blueprint.printPath(aStar((3, 2), (17, 2), blueprint))

@@ -38,11 +38,11 @@ def menu():
         print("[0] Quit")
         file = input("File input: ")
         
-        if file == str(1): file = "../inputs/example.in"
-        elif file == str(2): file = "../inputs/charleston_road.in"
-        elif file == str(3): file = "../inputs/rue_de_londres.in"
-        elif file == str(4): file = "../inputs/rue_de_londres.in"
-        elif file == str(5): file = "../inputs/lets_go_higher.in"
+        if file == str(1): file = "./inputs/example.in"
+        elif file == str(2): file = "./inputs/charleston_road.in"
+        elif file == str(3): file = "./inputs/rue_de_londres.in"
+        elif file == str(4): file = "./inputs/rue_de_londres.in"
+        elif file == str(5): file = "./inputs/lets_go_higher.in"
         elif file == str(0): break
         else:
             print("File not found\n")

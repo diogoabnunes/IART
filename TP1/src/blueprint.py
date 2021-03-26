@@ -151,10 +151,6 @@ class Blueprint:
             gridVisited.append(rowVisited)
         self.gridVisited = gridVisited
         
-
-    def printPath(self, path):
-        return
-    
    
     def printPath(self, returnFromAStar):
         path, dist = returnFromAStar
@@ -162,7 +158,7 @@ class Blueprint:
         
         gridToPrint = self.grid.copy()
         for coord in path:
-            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+            self.setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
             
         rowsInStr = []
         for row in gridToPrint:
