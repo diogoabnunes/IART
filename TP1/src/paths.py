@@ -11,12 +11,19 @@ def aStar(startCoord, endCoord, blueprint):
     """    Params are tuples """
     heap = [(distance(startCoord, endCoord), startCoord)]
     heapq.heapify(heap)   
-    
+    resultPath, pathDist = [], 0
     while heap:
         currentDist, currentPos = heapq.heappop(heap)
+        
         if currentDist == 0:
+            resultPath.append(currentPos)
+            return resultPath, pathDist
+        
+        pathDist += 1
+        resultPath.append(currentPos)
+        
         neighbours = blueprint.getNeighbours(currentPos)
         for n in neighbours:
             heapq.heappush(heap, (distance(n, endCoord), n))
-
-
+            
+    return None

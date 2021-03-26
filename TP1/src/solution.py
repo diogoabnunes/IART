@@ -11,11 +11,13 @@ bc: Column of initial cell that is already connected to the backbone
 
 import time
 import blueprint
+import paths
 
 if __name__ == "__main__":
     startTime = time.time()
     blueprint = blueprint.Blueprint("../inputs/example.in")
-    blueprint.print()
-    print(blueprint.getNeighbours((2,2)))
+    # blueprint.print()
+    
+    print(paths.aStar((3,3), (5,5), blueprint))
     endTime = time.time()
     print(f"Time: {endTime - startTime} seconds")
