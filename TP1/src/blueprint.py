@@ -154,11 +154,29 @@ class Blueprint:
 
     def printPath(self, path):
         return
+    
+    def getNumCables(): # toChange
+        return 1
+    
+    def getNumRouters(): #toChange
+        return 1
+    
+    def targetCellsCovered(): #toChange
+        return 1
 
-
-
-
-
+    def score(self):
         
-                    
-            
+        N = self.getNumCables()
+        M = self.getNumRouters()
+        t = self.targetCellsCovered()
+        
+        return 1000 * t + (self.B - (N * self.Pb + M * self.Pr))
+
+    def checkBudget(self):
+        
+        N = self.getNumCables()
+        M = self.getNumRouters();
+        
+        return N * self.Pb + M * self.Pr <= self.B
+    
+    
