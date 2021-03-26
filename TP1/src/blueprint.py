@@ -152,7 +152,8 @@ class Blueprint:
         self.gridVisited = gridVisited
         
 
-        
+    def printPath(self, path):
+        return
 
 
 

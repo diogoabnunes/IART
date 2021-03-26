@@ -17,14 +17,14 @@ def aStar(startCoord, endCoord, blueprint):
     """
     
     if (not blueprint.validPosition(startCoord)) or (not blueprint.validPosition(endCoord)): return None
-    
+    print(blueprint.gridVisited)
     heap = [(distance(startCoord, endCoord), startCoord)]
     heapq.heapify(heap)   
     resultPath, pathDist = [], 0
     while heap:
         currentDist, currentPos = heapq.heappop(heap)
-        if blueprint.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expectedd position!")
-        if not blueprint.atVisitedGrid(currentPos): continue
+        if blueprint.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expected position!")
+        if blueprint.atVisitedGrid(currentPos): continue
         blueprint.visit(currentPos)
         if currentDist == 0:
             resultPath.append(currentPos)
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     blueprint = blueprint.Blueprint("../inputs/example.in")
     blueprint.print()
     
-    print(aStar((2,2), (9,2), blueprint))
+    print(aStar((3, 3), (4, 3), blueprint))
     endTime = time.time()
     print(f"Time: {endTime - startTime} seconds")
+    blueprint.clearVisited()
