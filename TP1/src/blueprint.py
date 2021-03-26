@@ -5,31 +5,31 @@ Blueprint class
 class Blueprint:
     def __init__(self, filename):
         with open(filename) as file:
-                file = file.read().split("\n") # Separated in lines
-                
-                [H, W, R] = [int(x) for x in file[0].split()]
-                [Pb, Pr, B] = [int(x) for x in file[1].split()]
-                [br, bc] = [int(x) for x in file[2].split()]
-                
-                self.size = (W, H)
-                self.routerRadius = R
-                self.backboneCost = Pb
-                self.routerCost = Pr
-                self.budget = B
-                self.backbonePosition = (bc, br)
+            file = file.read().split("\n") # Separated in lines
+            
+            [H, W, R] = [int(x) for x in file[0].split()]
+            [Pb, Pr, B] = [int(x) for x in file[1].split()]
+            [br, bc] = [int(x) for x in file[2].split()]
+            
+            self.size = (W, H)
+            self.routerRadius = R
+            self.backboneCost = Pb
+            self.routerCost = Pr
+            self.budget = B
+            self.backbonePosition = (bc, br)
 
-                grid = []
-                gridVisited = []
-                for i in range(H):
-                    row = []
-                    rowVisited = []
-                    for j in range(W):
-                        row.append(file[i+3][j])
-                        rowVisited.append(False)
-                    grid.append(row)
-                    gridVisited.append(rowVisited)
-                self.grid = grid
-                self.gridVisited = gridVisited
+            grid = []
+            gridVisited = []
+            for i in range(H):
+                row = []
+                rowVisited = []
+                for j in range(W):
+                    row.append(file[i+3][j])
+                    rowVisited.append(False)
+                grid.append(row)
+                gridVisited.append(rowVisited)
+            self.grid = grid
+            self.gridVisited = gridVisited
     
     def printGrid(self):   
         rowsInStr = []
@@ -94,6 +94,10 @@ class Blueprint:
         return result
     
     def atGrid(self, x, y = None):
+        """
+        Returns the content of a position of the grid.
+        Accepts one parameter only when it's a tuple
+        """
         try:
             if type(x) == tuple:
                 return self.grid[x[1]][x[0]]
@@ -102,6 +106,10 @@ class Blueprint:
             return False
         
     def atVisitedGrid(self, x, y = None):
+        """
+        Return true if the cell has been visited, false otherwise. If there is an error returns None.
+        Accepts one parameter only when it's a tuple
+        """
         try:
             if type(x) == tuple:
                 return self.gridVisited[x[1]][x[0]]
@@ -109,13 +117,19 @@ class Blueprint:
         except IndexError:
             return None
     
-    def validPosition(self, x, y = None): # Not a wall and not out of bounds
+    def validPosition(self, x, y = None):
+        """
+        Checks if a position is valid and doesn't have a wall.
+        """
         atGrid = self.atGrid(x, y)
         if (atGrid == False): 
             return False
         return atGrid != '#'
     
     def visit(self, x, y = None):
+        """
+        Mark a cell as visited
+        """
         try:
             if type(x) == tuple:
                 self.gridVisited[x[1]][x[0]] = True
@@ -126,6 +140,9 @@ class Blueprint:
             return None
         
     def clearVisited(self):
+        """
+        Resets visited cells
+        """
         gridVisited = []
         for i in range(self.size[1]):
             rowVisited = []
@@ -133,8 +150,15 @@ class Blueprint:
                 rowVisited.append(False)
             gridVisited.append(rowVisited)
         self.gridVisited = gridVisited
-            
         
+
+    def printPath(self, path):
+        return
+
+
+
+
+
         
                     
             
