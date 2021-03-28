@@ -4,9 +4,7 @@ Blueprint class
 import heapq
 import random
 import time
-
 from utils import *
-
 
 class Blueprint:
     def __init__(self, filename):
@@ -25,19 +23,17 @@ class Blueprint:
             self.backbonePosition = (bc, br)
             self.paths = {}
             self.cellsCoverage = {}
+            self.grid = []
+            self.gridVisited = []
 
-            grid = []
-            gridVisited = []
             for i in range(H):
                 row = []
                 rowVisited = []
                 for j in range(W):
                     row.append(file[i + 3][j])
                     rowVisited.append(False)
-                grid.append(row)
-                gridVisited.append(rowVisited)
-            self.grid = grid
-            self.gridVisited = gridVisited
+                self.grid.append(row)
+                self.gridVisited.append(rowVisited)
 
     def printGrid(self):
         rowsInStr = []
@@ -317,14 +313,19 @@ class Blueprint:
                 cellsCovered = blueprint.getCellCoverage((x, y))
                 self.cellsCoverage[(x, y)] = cellsCovered
 
+    def getNumCables(self):
+        return 1
 
-# Blueprint end
+    def getNumRouters(self):
+        return 1
+
+    def targetCellsCovered(self):
+        return 1
 
 
 if __name__ == "__main__":
     blueprint = Blueprint("../inputs/example.in")
     blueprint.clearVisited()
-
     startTime = time.process_time()
 
     endTime = time.process_time()
