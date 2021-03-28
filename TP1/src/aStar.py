@@ -16,7 +16,11 @@ class Node:
 
     # Sort nodes
     def __lt__(self, other):
-        return (self.cost + self.heurisitic) < (other.cost + other.heurisitic)
+        processedCost = 0.8
+        return (processedCost*self.cost + self.heurisitic) < (processedCost*other.cost + other.heurisitic)
+
+    def __repr__(self):
+        return ('({0},{1})'.format(self.position, self.cost + self.heurisitic))
 
 
 def aStar(blueprint, startCoord, endCoord):
@@ -36,11 +40,18 @@ def aStar(blueprint, startCoord, endCoord):
     closed = []
     # totalNodes = blueprint.size[0] * blueprint.size[1]
     # numNodesProcessed = 0
+    # first_time = True
     while open:
         # numNodesProcessed += 1
-        # if (numNodesProcessed % 100 == 0):
-        #     print(str(numNodesProcessed) + "/" + str(totalNodes))
         currentNode = heapq.heappop(open)
+        # if numNodesProcessed < 50:
+        #     if first_time:
+        #         print(str(numNodesProcessed) + "/" + str(totalNodes) + "   -   Position: " + str(currentNode.position))
+        #         first_time = False
+        #     else:
+        #         print(str(numNodesProcessed) + "/" + str(totalNodes),"- Position:" , currentNode.position, "- Diagonal:", isDiagonal(currentNode.position, currentNode.parent.position), "- Cost:", currentNode.cost + currentNode.heurisitic)
+        #         print(open)
+
         closed.append(currentNode)
 
         if currentNode == endNode:
@@ -49,7 +60,7 @@ def aStar(blueprint, startCoord, endCoord):
                 path.append(currentNode.position)
                 currentNode = currentNode.parent
             path.append(currentNode.position)
-            return path[::-1]
+            return list(path[1:])[::-1]
 
         neighbours = blueprint.getNeighbours(currentNode.position)
         for n in neighbours:
