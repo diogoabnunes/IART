@@ -4,6 +4,8 @@ Blueprint class
 from math import sqrt
 import time
 import heapq
+import random
+from utils import * 
 
 class Blueprint:
     def __init__(self, filename):
@@ -192,28 +194,41 @@ class Blueprint:
         """
         
         if (not self.validPosition(startCoord)) or (not self.validPosition(endCoord)): return None
+        
+        pathAux = [-1] * self.size[0] * self.size[1]
 
         heap = [(distance(startCoord, endCoord), startCoord)]
         heapq.heapify(heap)   
-        resultPath, pathDist = [], 0
+        pathDist = 0
+        previousPos, currentPos = (-1, -1), (-1, -1)
         while heap:
             currentDist, currentPos = heapq.heappop(heap)
+
+            if (currentPos != (-1, -1)):
+                pathAux[previousPos[1]*self.size[0] + previousPos[0]] = currentPos[1]*self.size[0] + currentPos[0]
+
+            if currentPos == endCoord:
+                break
+            
             if self.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expected position!")
             if self.atVisitedGrid(currentPos): continue
-
             self.visit(currentPos)
-            if currentDist == 0:
-                resultPath.append(currentPos)
-                return resultPath, pathDist
-            
+
             pathDist += 1
-            resultPath.append(currentPos)
             
             neighbours = self.getNeighbours(currentPos)
             for n in neighbours:
-                heapq.heappush(heap, (distance(n, endCoord), n))
-                
-        return None
+                heapq.heappush(heap, (distance(n, endCoord) + pathDist, n))
+
+            previousPos = currentPos            
+        
+        path = [startCoord]
+        while path[-1] != endCoord:
+            nextCellNum = pathAux[path[-1][1] * self.size[0] + path[-1][0]]
+            nextCell = (nextCellNum//self.size[0], nextCellNum%self.size[0])
+            path.append(nextCell)
+        
+        return path, pathDist
 
     def calculateAllPaths(self, endCoord):
         self.paths = {}
@@ -221,30 +236,96 @@ class Blueprint:
             for j in range(self.size[1]):
                 if not self.validPosition(i, j): continue
                 self.paths[(i, j)] = self.aStar((i,j), endCoord)
+                
+    def getMaxRouters(self) -> int:
+        return int(self.budget/self.routerCost)
+    
+    def generateSolution(self):
+        solution = []
+        auxList = [0] * self.getMaxRouters()
+        for i in auxList:
+            x = random.randint(self.width)
+            y = random.randint(self.height)
+            if self.validPosition(x, y):
+                auxList.append(i)
+                continue
+            solution.append((x,y))
+        return solution
+        
+    def getCellCoverage(self, coords):
+        if not self.validPosition(coords): return None
+        ret = []
+
+        upperCoverage = coords[1]-self.routerRadius
+        leftCoverage = coords[0]-self.routerRadius
+        rightCoverage = coords[0]+self.routerRadius
+        bottomCoverage = coords[1]+self.routerRadius
+
+        # getWalls
+        walls = []
+        for i in range(upperCoverage,bottomCoverage + 1):
+            for j in range(leftCoverage,rightCoverage + 1):
+                if self.atGrid(self.grid[i][j]) == "#": 
+                    walls.append((i, j))
+
+        # min e max [w, v]
+        for x in range(upperCoverage,bottomCoverage + 1):
+            for y in range(leftCoverage,rightCoverage + 1):
+                if self.atGrid(self.grid[x][y]) == ".": 
+                    (a, b) = (coords[0], coords[1])
+                    
+                    minX = min(a, x)
+                    maxX = max(a, x)
+                    minY = min(b, y)
+                    maxY = max(b, y)
+
+                    for (wallX, wallY) in walls:
+                        if not (wallX <= maxX and wallX >= minX and wallY <= maxY and wallY >= minY):
+                            ret.append(i,j)
+        return ret
+
+    def printRouterCoverage(self, cellCoverage):
+        gridToPrint = self.grid.copy()
+
+        for coord in cellCoverage:
+            setGridContent(gridToPrint, "\033[30;44m" + self.atGrid(coord) + "\033[m", coord)
+            
+        rowsInStr = []
+        for row in gridToPrint:
+            rowsInStr.append(''.join(row))
+        gridStr = '\n'.join(rowsInStr)
+        print(gridStr)
+        
+
+"""
+        # a, b: (3, 7)
+        # x, y: (0, 4)
+        # min(a, x) = 0
+        # max(a, x) = 3
+        # min(b, y) = 4
+        # max(b, y) = 7
+
+        # ! (0 <= w <= 3 AND 4 <= v <= 7)
+        # no wall cell inside [w, v]
+
+
+        coords[0]-radius, coords[1]-radius
+
+        coords[0]+radius, coords[1]+radius
+        """
+
 
 # Blueprint end
 
-def distance(pointA, pointB):
-    return sqrt((pointA[0] - pointB[0])**2 + (pointA[1] - pointB[1])**2)
-
-def setGridContent(grid, content, x, y = None):
-    try:
-        if type(x) == tuple:
-            grid[x[1]][x[0]] = content
-            return
-        grid[y][x] = content
-        return
-    except IndexError:
-        return None
-
 
 if __name__ == "__main__":
-    startTime = time.process_time()
-    blueprint = Blueprint("./inputs/example.in")
+    blueprint = Blueprint("../inputs/charleston_road.in")
     blueprint.clearVisited()
-    
-    # blueprint.printPath(blueprint.aStar((3, 2), (17, 2)))
-    blueprint.calculateAllPaths((1, 1))
+
+    startTime = time.process_time()    
+    blueprint.aStar((3, 2), (4, 2))
+#    blueprint.printPath(blueprint.aStar((3, 2), (3, 4)))
+#    blueprint.calculateAllPaths((1, 1))
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()

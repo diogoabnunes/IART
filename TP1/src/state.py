@@ -1,5 +1,14 @@
 import blueprint as bp
 
+def value(blueprint, solution):
+    coveredCellsNum = blueprint.coveredCells(solution)
+    remainingBudget = blueprint.remainingBudget(solution)
+    return 1000 * coveredCellsNum + remainingBudget
+    
+
+"""
+import blueprint as bp
+
 class State:
     def __init__(self):
         self.grid = bp.grid
@@ -38,3 +47,7 @@ class State:
 
         # 0 <= w <= 3 AND 4 <= v <= 7
         # no wall cell inside [w, v]
+
+"""
+
+
