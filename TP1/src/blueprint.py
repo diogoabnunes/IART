@@ -1,10 +1,10 @@
 """
 Blueprint class
 """
-from math import sqrt
-import time
 import heapq
 import random
+import time
+
 from utils import *
 
 
@@ -24,6 +24,7 @@ class Blueprint:
             self.budget = B
             self.backbonePosition = (bc, br)
             self.paths = {}
+            self.cellsCoverage = {}
 
             grid = []
             gridVisited = []
@@ -129,7 +130,7 @@ class Blueprint:
         Checks if a position is valid and doesn't have a wall.
         """
         atGrid = self.atGrid(x, y)
-        if (atGrid == False):
+        if not atGrid:
             return False
         return atGrid != '#'
 
@@ -180,12 +181,12 @@ class Blueprint:
         N = self.getNumCables()
         M = self.getNumRouters()
         t = self.targetCellsCovered()
-        return 1000 * t + (self.B - (N * self.Pb + M * self.Pr))
+        return 1000 * t + (self.budget - (N * self.backboneCost + M * self.routerCost))
 
     def checkBudget(self):
         N = self.getNumCables()
         M = self.getNumRouters()
-        return N * self.Pb + M * self.Pr <= self.B
+        return N * self.backboneCost + M * self.routerCost <= self.budget
 
     def aStar(self, startCoord, endCoord):
         """ Calculates the shortest paths between 2 points.
@@ -194,7 +195,8 @@ class Blueprint:
                 blueprint - class Blueprint
         """
 
-        if (not self.validPosition(startCoord)) or (not self.validPosition(endCoord)): return None
+        if (not self.validPosition(startCoord)) or (not self.validPosition(endCoord)):
+            return None
 
         pathAux = [-1] * self.size[0] * self.size[1]
 
@@ -205,14 +207,16 @@ class Blueprint:
         while heap:
             currentDist, currentPos = heapq.heappop(heap)
 
-            if (currentPos != (-1, -1)):
+            if currentPos != (-1, -1):
                 pathAux[previousPos[1] * self.size[0] + previousPos[0]] = currentPos[1] * self.size[0] + currentPos[0]
 
             if currentPos == endCoord:
                 break
 
-            if self.atVisitedGrid(currentPos) == None: raise RuntimeError("Not expected position!")
-            if self.atVisitedGrid(currentPos): continue
+            if self.atVisitedGrid(currentPos) is None:
+                raise RuntimeError("Not expected position!")
+            if self.atVisitedGrid(currentPos):
+                continue
             self.visit(currentPos)
 
             pathDist += 1
@@ -235,7 +239,8 @@ class Blueprint:
         self.paths = {}
         for i in range(self.size[0]):
             for j in range(self.size[1]):
-                if not self.validPosition(i, j): continue
+                if not self.validPosition(i, j):
+                    continue
                 self.paths[(i, j)] = self.aStar((i, j), endCoord)
 
     def getMaxRouters(self) -> int:
@@ -245,8 +250,8 @@ class Blueprint:
         solution = []
         auxList = [0] * self.getMaxRouters()
         for i in auxList:
-            x = random.randint(self.width)
-            y = random.randint(self.height)
+            x = random.randint(0, self.size[1])
+            y = random.randint(0, self.size[0])
             if self.validPosition(x, y):
                 auxList.append(i)
                 continue
@@ -307,21 +312,11 @@ class Blueprint:
         print(gridStr)
 
     def getAllCellsCoverage(self):
-        maxCoverage = -1;
-        maxRouter = []
         for x in range(blueprint.size[1]):
             for y in range(blueprint.size[0]):
-                num = blueprint.getCellCoverage((x, y))
-                if num is None:
-                    continue
-                if len(num) > maxCoverage:
-                    maxCoverage = len(num)
-                    maxRouter.clear()
-                    maxRouter.append((x, y))
-                elif num == maxCoverage:
-                    maxRouter.append((x, y))
+                cellsCovered = blueprint.getCellCoverage((x, y))
+                self.cellsCoverage[(x, y)] = cellsCovered
 
-        return maxRouter, maxCoverage
 
 # Blueprint end
 
@@ -331,11 +326,6 @@ if __name__ == "__main__":
     blueprint.clearVisited()
 
     startTime = time.process_time()
-
-    acc, maxC = blueprint.getAllCellsCoverage()
-    print("Max coverage: " + str(maxC))
-    print("MaxRouter size: " + str(len(acc)))
-    blueprint.printRouterCoverage(blueprint.getCellCoverage(acc[0]), acc[0])
 
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
