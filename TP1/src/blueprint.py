@@ -253,25 +253,25 @@ class Blueprint:
         return solution
         
     def getCellCoverage(self, coords):
-        if not self.validPosition(coords): return None
+        if not self.validPosition(coords[1], coords[0]): return None
         ret = []
 
-        upperCoverage = coords[1]-self.routerRadius
-        leftCoverage = coords[0]-self.routerRadius
-        rightCoverage = coords[0]+self.routerRadius
-        bottomCoverage = coords[1]+self.routerRadius
+        upperCoverage = max(0, coords[1]-self.routerRadius)
+        leftCoverage = max(0, coords[0]-self.routerRadius)
+        rightCoverage = min(self.size[0], coords[0]+self.routerRadius)
+        bottomCoverage = min(self.size[1], coords[1]+self.routerRadius)
 
         # getWalls
         walls = []
         for i in range(upperCoverage,bottomCoverage + 1):
             for j in range(leftCoverage,rightCoverage + 1):
-                if self.atGrid(self.grid[i][j]) == "#": 
+                if self.atGrid((i, j)) == "#": 
                     walls.append((i, j))
 
         # min e max [w, v]
         for x in range(upperCoverage,bottomCoverage + 1):
             for y in range(leftCoverage,rightCoverage + 1):
-                if self.atGrid(self.grid[x][y]) == ".": 
+                if self.atGrid((x, y)) == ".": 
                     (a, b) = (coords[0], coords[1])
                     
                     minX = min(a, x)
@@ -281,7 +281,10 @@ class Blueprint:
 
                     for (wallX, wallY) in walls:
                         if not (wallX <= maxX and wallX >= minX and wallY <= maxY and wallY >= minY):
-                            ret.append(i,j)
+                            if (x, y) not in ret:
+                                ret.append((x,y))
+                            
+        print("Cell coverage size: " + str(len(ret)))
         return ret
 
     def printRouterCoverage(self, cellCoverage):
@@ -319,11 +322,14 @@ class Blueprint:
 
 
 if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/charleston_road.in")
+    blueprint = Blueprint("./inputs/example.in")
     blueprint.clearVisited()
 
     startTime = time.process_time()    
-    blueprint.aStar((3, 2), (4, 2))
+
+    blueprint.printRouterCoverage(blueprint.getCellCoverage((0,0)))
+
+#    blueprint.aStar((3, 2), (4, 2))
 #    blueprint.printPath(blueprint.aStar((3, 2), (3, 4)))
 #    blueprint.calculateAllPaths((1, 1))
     endTime = time.process_time()
