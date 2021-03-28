@@ -296,7 +296,7 @@ class Blueprint:
 
         for coord in cellCoverage:
             setGridContent(gridToPrint, "\033[30;44m" + self.atGrid(coord) + "\033[m", coord)
-            #setGridContent(gridToPrint, "c", coord)
+            # setGridContent(gridToPrint, "c", coord)
 
         setGridContent(gridToPrint, 'R', routerCoord)
 
@@ -306,23 +306,22 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
+    def getAllCellsCoverage(self):
+        maxCoverage = -1;
+        maxRouter = []
+        for x in range(blueprint.size[1]):
+            for y in range(blueprint.size[0]):
+                num = blueprint.getCellCoverage((x, y))
+                if num is None:
+                    continue
+                if len(num) > maxCoverage:
+                    maxCoverage = len(num)
+                    maxRouter.clear()
+                    maxRouter.append((x, y))
+                elif num == maxCoverage:
+                    maxRouter.append((x, y))
 
-"""
-        # a, b: (3, 7)
-        # x, y: (0, 4)
-        # min(a, x) = 0
-        # max(a, x) = 3
-        # min(b, y) = 4
-        # max(b, y) = 7
-
-        # ! (0 <= w <= 3 AND 4 <= v <= 7)
-        # no wall cell inside [w, v]
-
-
-        coords[0]-radius, coords[1]-radius
-
-        coords[0]+radius, coords[1]+radius
-        """
+        return maxRouter, maxCoverage
 
 # Blueprint end
 
@@ -333,11 +332,11 @@ if __name__ == "__main__":
 
     startTime = time.process_time()
 
-    blueprint.printRouterCoverage(blueprint.getCellCoverage((0, 0)), (0, 0))
+    acc, maxC = blueprint.getAllCellsCoverage()
+    print("Max coverage: " + str(maxC))
+    print("MaxRouter size: " + str(len(acc)))
+    blueprint.printRouterCoverage(blueprint.getCellCoverage(acc[0]), acc[0])
 
-       # blueprint.aStar((3, 2), (4, 2))
-    # blueprint.printPath(blueprint.aStar((3, 2), (3, 4)))
-    #    blueprint.calculateAllPaths((1, 1))
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
