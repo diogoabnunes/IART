@@ -5,6 +5,7 @@ import time
 import random
 from aStar import *
 
+from utils import *
 
 class Blueprint:
     def __init__(self, filename):
@@ -22,14 +23,15 @@ class Blueprint:
             self.budget = B
             self.backbonePosition = (bc, br)
             self.paths = {}
+            self.cellsCoverage = {}
+            self.grid = []
+            self.gridVisited = []
 
-            grid = []
             for i in range(H):
                 row = []
                 for j in range(W):
                     row.append(file[i + 3][j])
-                grid.append(row)
-            self.grid = grid
+                self.grid.append(row)
 
     def printGrid(self):
         rowsInStr = []
@@ -122,7 +124,7 @@ class Blueprint:
         Checks if a position is valid and doesn't have a wall.
         """
         atGrid = self.atGrid(x, y)
-        if (atGrid == False):
+        if not atGrid:
             return False
         return atGrid != '#'
 
@@ -176,12 +178,12 @@ class Blueprint:
         N = self.getNumCables()
         M = self.getNumRouters()
         t = self.targetCellsCovered()
-        return 1000 * t + (self.B - (N * self.Pb + M * self.Pr))
+        return 1000 * t + (self.budget - (N * self.backboneCost + M * self.routerCost))
 
     def checkBudget(self):
         N = self.getNumCables()
         M = self.getNumRouters()
-        return N * self.Pb + M * self.Pr <= self.B
+        return N * self.backboneCost + M * self.routerCost <= self.budget
 
 
     def calculateAllPaths(self, endCoord):
@@ -198,8 +200,8 @@ class Blueprint:
         solution = []
         auxList = [0] * self.getMaxRouters()
         for i in auxList:
-            x = random.randint(self.width)
-            y = random.randint(self.height)
+            x = random.randint(0, self.size[1])
+            y = random.randint(0, self.size[0])
             if self.validPosition(x, y):
                 auxList.append(i)
                 continue
@@ -207,25 +209,26 @@ class Blueprint:
         return solution
 
     def getCellCoverage(self, coords):
-        if not self.validPosition(coords): return None
+        if not self.validPosition(coords):
+            return None
         ret = []
 
-        upperCoverage = coords[1] - self.routerRadius
-        leftCoverage = coords[0] - self.routerRadius
-        rightCoverage = coords[0] + self.routerRadius
-        bottomCoverage = coords[1] + self.routerRadius
+        upperCoverage = max(0, coords[1] - self.routerRadius)
+        leftCoverage = max(0, coords[0] - self.routerRadius)
+        rightCoverage = min(self.size[0], coords[0] + self.routerRadius)
+        bottomCoverage = min(self.size[1], coords[1] + self.routerRadius)
 
         # getWalls
         walls = []
-        for i in range(upperCoverage, bottomCoverage + 1):
-            for j in range(leftCoverage, rightCoverage + 1):
-                if self.atGrid(self.grid[i][j]) == "#":
+        for i in range(leftCoverage, rightCoverage + 1):
+            for j in range(upperCoverage, bottomCoverage + 1):
+                if self.atGrid((i, j)) == "#":
                     walls.append((i, j))
 
         # min e max [w, v]
-        for x in range(upperCoverage, bottomCoverage + 1):
-            for y in range(leftCoverage, rightCoverage + 1):
-                if self.atGrid(self.grid[x][y]) == ".":
+        for x in range(leftCoverage, rightCoverage + 1):
+            for y in range(upperCoverage, bottomCoverage + 1):
+                if self.atGrid((x, y)) == ".":
                     (a, b) = (coords[0], coords[1])
 
                     minX = min(a, x)
@@ -233,16 +236,23 @@ class Blueprint:
                     minY = min(b, y)
                     maxY = max(b, y)
 
+                    append = True
                     for (wallX, wallY) in walls:
-                        if not (wallX <= maxX and wallX >= minX and wallY <= maxY and wallY >= minY):
-                            ret.append(i, j)
+                        if (maxX >= wallX >= minX) and (maxY >= wallY >= minY):
+                            append = False
+
+                    if append:
+                        ret.append((x, y))
         return ret
 
-    def printRouterCoverage(self, cellCoverage):
+    def printRouterCoverage(self, cellCoverage, routerCoord):
+        print("Cell coverage size: " + str(len(cellCoverage)))
         gridToPrint = self.grid.copy()
 
         for coord in cellCoverage:
             setGridContent(gridToPrint, "\033[30;44m" + self.atGrid(coord) + "\033[m", coord)
+
+        setGridContent(gridToPrint, 'R', routerCoord)
 
         rowsInStr = []
         for row in gridToPrint:
@@ -250,37 +260,28 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
+    def getAllCellsCoverage(self):
+        for x in range(blueprint.size[1]):
+            for y in range(blueprint.size[0]):
+                cellsCovered = blueprint.getCellCoverage((x, y))
+                self.cellsCoverage[(x, y)] = cellsCovered
 
-"""
-        # a, b: (3, 7)
-        # x, y: (0, 4)
-        # min(a, x) = 0
-        # max(a, x) = 3
-        # min(b, y) = 4
-        # max(b, y) = 7
-
-        # ! (0 <= w <= 3 AND 4 <= v <= 7)
-        # no wall cell inside [w, v]
-
-
-        coords[0]-radius, coords[1]-radius
-
-        coords[0]+radius, coords[1]+radius
-        """
+    def getNumCables(self):
+        return 1
 
 # Blueprint end
 
 
 if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/charleston_road.in")
-
-    startTime = time.process_time()
-    # aStar(blueprint, (1, 2), (5, 2))
-    blueprint.printPath(aStar(blueprint, (0,0), (179, 239)))
-    #    blueprint.calculateAllPaths((1, 1))
-    endTime = time.process_time()
-    print(f"Time: {endTime - startTime} seconds")
-    blueprint.reset()
+    # blueprint = Blueprint("../inputs/charleston_road.in")
+    #
+    # startTime = time.process_time()
+    # # aStar(blueprint, (1, 2), (5, 2))
+    # blueprint.printPath(aStar(blueprint, (0,0), (179, 239)))
+    # #    blueprint.calculateAllPaths((1, 1))
+    # endTime = time.process_time()
+    # print(f"Time: {endTime - startTime} seconds")
+    # blueprint.reset()
 
     # blueprint = Blueprint("../inputs/labirinto.in")
     #
@@ -292,12 +293,12 @@ if __name__ == "__main__":
     # print(f"Time: {endTime - startTime} seconds")
     # blueprint.reset()
 
-    # blueprint = Blueprint("../inputs/better_example.in")
-    #
-    # startTime = time.process_time()
-    # # aStar(blueprint, (1, 2), (5, 2))
-    # blueprint.printPath(aStar(blueprint, (0,0), (21, 7)))
-    # #    blueprint.calculateAllPaths((1, 1))
-    # endTime = time.process_time()
-    # print(f"Time: {endTime - startTime} seconds")
-    # blueprint.reset()
+    blueprint = Blueprint("../inputs/better_example.in")
+
+    startTime = time.process_time()
+    # aStar(blueprint, (1, 2), (5, 2))
+    blueprint.printPath(aStar(blueprint, (0,0), (21, 7)))
+    #    blueprint.calculateAllPaths((1, 1))
+    endTime = time.process_time()
+    print(f"Time: {endTime - startTime} seconds")
+    blueprint.reset()
