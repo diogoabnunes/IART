@@ -29,8 +29,9 @@ def aStar(blueprint, startCoord, endCoord):
             endCoord - tuple
             blueprint - class Blueprint
     """
-
-    if (not blueprint.validPosition(startCoord)) or (not blueprint.validPosition(endCoord)): return None
+    startCoord = tuple(startCoord)
+    if (not blueprint.validPosition(startCoord)) or (not blueprint.atGrid(endCoord)):
+        return None
 
     startNode = Node(startCoord, None, distance(startCoord, endCoord))
     endNode = Node(endCoord, None, 0)

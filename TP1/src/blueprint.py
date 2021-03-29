@@ -96,7 +96,7 @@ class Blueprint:
         Accepts one parameter only when it's a tuple
         """
         try:
-            if type(x) == tuple:
+            if type(x) == tuple or type(x) == list:
                 return self.grid[x[1]][x[0]]
             return self.grid[y][x]
         except IndexError:
@@ -108,7 +108,7 @@ class Blueprint:
         Accepts one parameter only when it's a tuple
         """
         try:
-            if type(x) == tuple:
+            if type(x) == tuple or type(x) == list:
                 return self.gridVisited[x[1]][x[0]]
             return self.gridVisited[y][x]
         except IndexError:
@@ -128,7 +128,7 @@ class Blueprint:
         Mark a cell as visited
         """
         try:
-            if type(x) == tuple:
+            if type(x) == tuple or type(x) == list:
                 self.gridVisited[x[1]][x[0]] = True
                 return
             self.gridVisited[y][x] = True
@@ -169,18 +169,6 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def score(self):
-        N = self.getNumCables()
-        M = self.getNumRouters()
-        t = self.targetCellsCovered()
-        return 1000 * t + (self.budget - (N * self.backboneCost + M * self.routerCost))
-
-    def checkBudget(self):
-        N = self.getNumCables()
-        M = self.getNumRouters()
-        return N * self.backboneCost + M * self.routerCost <= self.budget
-
-
     def calculateAllPaths(self, endCoord):
         self.paths = {}
         for i in range(self.size[0]):
@@ -191,19 +179,11 @@ class Blueprint:
     def getMaxRouters(self) -> int:
         return int(self.budget / self.routerCost)
 
-    def generateSolution(self):
-        solution = []
-        auxList = [0] * self.getMaxRouters()
-        for i in auxList:
-            x = random.randint(0, self.size[1])
-            y = random.randint(0, self.size[0])
-            if self.validPosition(x, y):
-                auxList.append(i)
-                continue
-            solution.append((x, y))
-        return solution
-
     def getCellCoverage(self, coords):
+        """
+        Returns a list of the cell coord that would be covered by the router's
+        network if the router was to be put in a certain cell with &coords
+        """
         if not self.validPosition(coords):
             return None
         ret = []
@@ -241,6 +221,7 @@ class Blueprint:
         return ret
 
     def printRouterCoverage(self, cellCoverage, routerCoord):
+
         print("Cell coverage size: " + str(len(cellCoverage)))
         gridToPrint = self.grid.copy()
 
@@ -256,28 +237,50 @@ class Blueprint:
         print(gridStr)
 
     def getAllCellsCoverage(self):
-        for x in range(blueprint.size[1]):
-            for y in range(blueprint.size[0]):
+        """
+        Gets the router's network coverage for all cells
+        """
+        for x in range(blueprint.size[0]):
+            for y in range(blueprint.size[1]):
                 cellsCovered = blueprint.getCellCoverage((x, y))
                 self.cellsCoverage[(x, y)] = cellsCovered
 
-# a testar qual o melhor
-    def getSolutionBackboneCells1(self, solution):
+    def getSolutionBackboneCells(self, solution):
         cells = []
         for router in solution:
-            routerCells = self.paths[router]
-            cells.extend(routerCells)
+            if router != [-1, -1]:
+                routerCells = self.accessPathsDict(router)
+                cells.extend(routerCells)
         cells = list(dict.fromkeys(cells))
         return cells
 
-    def getSolutionBackboneCells2(self, solution):
+    def getSolutionCoveredCells(self, solution):
         cells = []
         for router in solution:
-            cells = list(set(cells) | set(self.paths[router]))
+            if router != [-1, -1]:
+                coveredCells = self.accessCoverageDict(router)
+                print(router)
+                cells.extend(coveredCells)
+        cells = list(dict.fromkeys(cells))
         return cells
 
+    def accessCoverageDict(self, router):
+        try:
+            coverage = self.cellsCoverage[tuple(router)]
+            return coverage
+        except KeyError:
+            coverage = self.getCellCoverage(router)
+            self.cellsCoverage[tuple(router)] = coverage
+            return coverage
 
-
+    def accessPathsDict(self, router):
+        try:
+            coverage = self.paths[tuple(router)]
+            return coverage
+        except KeyError:
+            coverage = aStar(self, router, self.backbonePosition)
+            self.paths[tuple(router)] = coverage
+            return coverage
 # Blueprint end
 
 
