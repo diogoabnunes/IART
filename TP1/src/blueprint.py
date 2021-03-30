@@ -102,18 +102,6 @@ class Blueprint:
         except IndexError:
             return False
 
-    def atVisitedGrid(self, x, y=None):
-        """
-        Return true if the cell has been visited, false otherwise. If there is an error returns None.
-        Accepts one parameter only when it's a tuple
-        """
-        try:
-            if type(x) == tuple or type(x) == list:
-                return self.gridVisited[x[1]][x[0]]
-            return self.gridVisited[y][x]
-        except IndexError:
-            return None
-
     def validPosition(self, x, y=None):
         """
         Checks if a position is valid and doesn't have a wall.
@@ -123,34 +111,9 @@ class Blueprint:
             return False
         return atGrid != '#'
 
-    def visit(self, x, y=None):
-        """
-        Mark a cell as visited
-        """
-        try:
-            if type(x) == tuple or type(x) == list:
-                self.gridVisited[x[1]][x[0]] = True
-                return
-            self.gridVisited[y][x] = True
-            return
-        except IndexError:
-            return None
-
-    def clearVisited(self):
-        """
-        Resets visited cells
-        """
-        gridVisited = []
-        for i in range(self.size[1]):
-            rowVisited = []
-            for j in range(self.size[0]):
-                rowVisited.append(False)
-            gridVisited.append(rowVisited)
-        self.gridVisited = gridVisited
-
     def reset(self):
-        self.clearVisited()
         self.paths = {}
+        self.cellsCoverage = {}
 
     def printPath(self, returnFromAStar):
         path = returnFromAStar
@@ -259,7 +222,6 @@ class Blueprint:
         for router in solution:
             if router != [-1, -1]:
                 coveredCells = self.accessCoverageDict(router)
-                print(router)
                 cells.extend(coveredCells)
         cells = list(dict.fromkeys(cells))
         return cells
@@ -281,6 +243,7 @@ class Blueprint:
             coverage = aStar(self, router, self.backbonePosition)
             self.paths[tuple(router)] = coverage
             return coverage
+
 # Blueprint end
 
 
