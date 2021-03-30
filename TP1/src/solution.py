@@ -11,6 +11,7 @@ bc: Column of initial cell that is already connected to the backbone
 
 import time
 import blueprint as bp
+from aStar import *
 
 def simulatedAnnealing():
     print("Algorithm: Simulated Annealing (not implemented yet)\n")
@@ -37,11 +38,11 @@ def menu():
         print("[0] Quit")
         file = input("File input: ")
         
-        if file == str(1): file = "./inputs/example.in"
-        elif file == str(2): file = "./inputs/charleston_road.in"
-        elif file == str(3): file = "./inputs/rue_de_londres.in"
-        elif file == str(4): file = "./inputs/rue_de_londres.in"
-        elif file == str(5): file = "./inputs/lets_go_higher.in"
+        if file == str(1): file = "../inputs/example.in"
+        elif file == str(2): file = "../inputs/charleston_road.in"
+        elif file == str(3): file = "../inputs/rue_de_londres.in"
+        elif file == str(4): file = "../inputs/rue_de_londres.in"
+        elif file == str(5): file = "../inputs/lets_go_higher.in"
         elif file == str(0): break
         else:
             print("File not found\n")
@@ -62,11 +63,15 @@ def menu():
             simulatedAnnealing()
             blueprint = bp.Blueprint(file)
             blueprint.print()
-            print(blueprint.aStar((2,2), (9,2)))
-        elif val == str(2): hillClimbing()
-        elif val == str(3): geneticAlgorithm()
-        elif val == str(4): tabuSearch()
-        elif val == str(0): break
+            print(aStar(blueprint, (2, 2), (9, 2)))
+        elif val == str(2):
+            hillClimbing()
+        elif val == str(3):
+            geneticAlgorithm()
+        elif val == str(4):
+            tabuSearch()
+        elif val == str(0):
+            break
         else:
             print("Algorithm not found\n")
             continue
