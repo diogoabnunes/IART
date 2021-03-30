@@ -2,6 +2,7 @@ import random
 import time
 import blueprint as bp
 import utils
+import heapq
 """
 [coord, ...]
 coord = [x, y]
@@ -40,22 +41,30 @@ def generateMaxRoutersSolution(blueprint):
 def routersPlaced(solution) -> int:
     counter = 0
     for router in solution:
-        if router != [-1,-1]:
+        if not utils.compareLists(router, [-1,-1]):
             counter += 1
     return counter
 
+def getIndiceOfLastNonEmptyRouter(solution) -> int:
+    for i in range(0, len(solution)):
+        if solution[-(i + 1)] != [-1, -1]:
+            return len(solution) - i - 1
 
-def value(blueprint, solution):  #also checks if solution doesn't exceed budget
-    try:
-        cellsCovered = len(blueprint.getSolutionCoveredCells(solution))
-        backboneCells = len(blueprint.getSolutionBackboneCells(solution))
-    except TypeError:
-        return None
-    numRouters = routersPlaced(solution)
-    remainingBudget = backboneCells * blueprint.backboneCost + numRouters * blueprint.routerCost
+def value(blueprint, solution):  #also checks if solution is valid
+    t = len(blueprint.getSolutionCoveredCells(solution))
+    N = len(blueprint.getSolutionBackboneCells(solution))
+    M = routersPlaced(solution)
+    remainingBudget = blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
     if (remainingBudget < 0): return None
 
-    return 1000 * cellsCovered + remainingBudget
+    # print(solution)
+    # print('\t', t)
+    # print('\t', N)
+    # print('\t', M)
+    # print('\t', remainingBudget)
+    # print('\t', 1000 * t + remainingBudget)
+
+    return 1000 * t + remainingBudget
 
 def randomNeighbour(blueprint, solution: list):          # can return an infeasable solution
     routersNum = routersPlaced(solution)
@@ -64,7 +73,7 @@ def randomNeighbour(blueprint, solution: list):          # can return an infeasa
     coordChange = random.randint(0, 1)
     upOrDown = random.randint(0, 1)
 
-    neighbour = solution.copy()
+    neighbour = copySolution(solution)
 
     if upOrDown == 1 and neighbour[routerChange][coordChange] != blueprint.size[coordChange] - 1:
         neighbour[routerChange][coordChange] += 1
@@ -76,8 +85,18 @@ def randomNeighbour(blueprint, solution: list):          # can return an infeasa
     if neighbourValue is None: return None, None
     return neighbour, neighbourValue
 
-def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown):
-    neighbour = solution.copy()
+def copySolution(solution):
+    copy = []
+    for router in solution:
+        copy.append(router.copy())
+    return copy
+
+def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters):
+
+    neighbour = copySolution(solution)
+
+    if numRouters - 1 < routerToChange:
+        raise RuntimeError("numRouters < routerToChange")
 
     if upOrDown == 1 and neighbour[routerToChange][coordToChange] != blueprint.size[coordToChange] - 1:
         neighbour[routerToChange][coordToChange] += 1
@@ -85,33 +104,45 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown):
         neighbour[routerToChange][coordToChange] -= 1
 
     if not validSolution(blueprint, neighbour): return None, None
+
+    routersToRemove = routersPlaced(solution) - numRouters
+    auxSol = neighbour.copy()
+    for i in range(len(auxSol)):
+        auxSol[i] = (len(blueprint.accessCoverageDict(auxSol[i])), tuple(auxSol[i]), i)
+
+    heapq.heapify(auxSol)
+    for i in range(routersToRemove):
+        removedRouter = heapq.heappop(auxSol)
+        indexToChange = getIndiceOfLastNonEmptyRouter(neighbour)
+        neighbour[removedRouter[2]] = neighbour[indexToChange]
+        neighbour[indexToChange] = [-1, -1]
+
+
     neighbourValue = value(blueprint, neighbour)
     if neighbourValue is None: return None, None
+
     return neighbour, neighbourValue
 
 def hillClimbing(blueprint, solution):
-    iteration = 0
     solutionValue = value(blueprint, solution)
-    neighbour = [[1,1]] * blueprint.getMaxRouters()
-    neighbourValue = -1
+    neighbourSolution = [[1,1]] * blueprint.getMaxRouters()
 
-    while routersPlaced(neighbour) > blueprint.getMaxRouters()/10:
-        for i in range(blueprint.size[0]):
-            for j in range(blueprint.size[1]):
-                if neighbourValue > solutionValue:
-                    solutionValue = neighbourValue
-                    solution = neighbour.copy()
-                    iteration = 0
+    for numRouters in range(blueprint.getMaxRouters(), -1, -1):
+        print("solution with", numRouters, "routers")
+        for i in range(numRouters):
+            print("i:", i, "/", numRouters)
+            for j in range(0,2):
+                for k in range(0,2):
+                    neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters)
+                    if neighbourSolution is None and neighbourValue is None:
+                        continue
+                    if utils.compareLists(solution, neighbourSolution):
+                        continue
 
-                neighbourCandidate, neighbourCandidateValue = randomNeighbour(blueprint, solution)
-                iteration += 1
-                if neighbourCandidate is None and neighbourCandidateValue is None:
-                    continue
-                if utils.compareLists(solution, neighbourCandidate):
-                    continue
-                neighbour, neighbourValue = neighbourCandidate.copy(), neighbourCandidateValue
+                    if neighbourValue > solutionValue:
+                        solutionValue = neighbourValue
+                        solution = neighbourSolution.copy()
 
-        neighbour[-blueprint.getMaxRouters() + routersPlaced(neighbour) - 1] = [-1, -1]
 
     return solution
 
@@ -135,5 +166,6 @@ if __name__ == "__main__":
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
+
 
 
