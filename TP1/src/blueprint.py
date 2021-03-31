@@ -209,7 +209,7 @@ class Blueprint:
     def getSolutionBackboneCells(self, solution):
         cells = []
         for router in solution:
-            if compareLists(router, [-1, -1]):
+            if not compareLists(router, [-1, -1]):
                 routerCells = self.accessPathsDict(router)
                 cells.extend(routerCells)
         cells = list(dict.fromkeys(cells))
@@ -218,7 +218,7 @@ class Blueprint:
     def getSolutionCoveredCells(self, solution):
         cells = []
         for router in solution:
-            if compareLists(router, [-1, -1]):
+            if not compareLists(router, [-1, -1]):
                 coveredCells = self.accessCoverageDict(router)
                 cells.extend(coveredCells)
         cells = list(dict.fromkeys(cells))
