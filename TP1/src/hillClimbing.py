@@ -1,6 +1,7 @@
 import random
 import time
 import blueprint as bp
+from utils import *
 
 
 def checkSolutionDuplicates(solution):
@@ -23,12 +24,7 @@ def generateSolution(blueprint):
     return solution
 
 
-def routersPlaced(solution) -> int:
-    counter = 0
-    for router in solution:
-        if router != [-1, -1]:
-            counter += 1
-    return counter
+
 
 
 def value(blueprint, solution):  # also checks if solution is valid
@@ -102,12 +98,13 @@ if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
 
     startTime = time.process_time()
-    # blueprint.getCellCoverage((2,15))
 
-    solution = generateSolution(blueprint)
-    print("Before Hill Climbing:", solution, ":", value(blueprint, solution))
-    solution = hillClimbing(blueprint, solution)
-    print("After Hill Climbing:", solution, ":", value(blueprint, solution))
+
+
+    # solution = generateSolution(blueprint)
+    # print("Before Hill Climbing:", solution, ":", value(blueprint, solution))
+    # solution = hillClimbing(blueprint, solution)
+    # print("After Hill Climbing:", solution, ":", value(blueprint, solution))
 
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
