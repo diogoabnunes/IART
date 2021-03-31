@@ -7,24 +7,24 @@ def getTabuStructure(blueprint,solution):
     dict = {}
     index = 0
     for i in solution:
-        aux1 = [index, 0, 0, len(solution)]
-        aux2 = [index, 0, 1, len(solution)]
-        aux3 = [index, 1, 0, len(solution)]
-        aux4 = [index, 1, 1, len(solution)]
-        aux5 = [index, 0, -1, len(solution)]
+        aux1 = (index, 0, 0, len(solution))
+        aux2 = (index, 0, 1, len(solution))
+        aux3 = (index, 1, 0, len(solution))
+        aux4 = (index, 1, 1, len(solution))
+        aux5 = (index, 0, -1, len(solution))
         dict[aux1] = {'tabuTime': 0, 'MoveValue': 0}
         dict[aux2] = {'tabuTime': 0, 'MoveValue': 0}
         dict[aux3] = {'tabuTime': 0, 'MoveValue': 0}
         dict[aux4] = {'tabuTime': 0, 'MoveValue': 0}
         dict[aux5] = {'tabuTime': 0, 'MoveValue': 0}
-        index = i + 1
+        index = index + 1
 
     return dict
 
 def TabuSearch(blueprint, solution):
     # Parameters
     tabuTenure = 10
-    tabuStructure = getTabuStructure(blueprint,solution)
+    tabuStructure = getTabuStructure(blueprint, solution)
     bestSolution = solution
     bestValue = hillClimbing.value(blueprint, bestSolution)
     currentSolution = solution
@@ -78,7 +78,7 @@ def TabuSearch(blueprint, solution):
                     tabuStructure[bestMove]["MoveValue"] = float('inf')
                     print("   best_move: {}, Objvalue: {} => Tabu => Inadmissible".format(bestMove, currentValue))
                     continue
-    print('#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Objvalue: {}".format(bestSolution, bestValue), sep="\n")
+    # print('#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Objvalue: {}".format(bestSolution, bestValue), sep="\n")
     return tabuStructure, bestSolution, bestValue
 
 if __name__ == "__main__":
@@ -103,5 +103,5 @@ if __name__ == "__main__":
     print("After Tabu Search:", s2, ":", hillClimbing.value(blueprint, s2))
 
     endTime = time.process_time()
-    print(f"Time: {endTime - startTime} seconds")
+    print("Time: {endTime - startTime} seconds")
     blueprint.reset()
