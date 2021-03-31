@@ -252,6 +252,10 @@ class Blueprint:
                 self.cellsCoverage[(x, y)] = cellsCovered
 
     def getSolutionBackboneCells(self, solution):
+        """
+        :param solution: Solution needs to be valid!!!
+        :return: list of backbone cells
+        """
         cells = []
         for router in solution:
             if not compareLists(router, [-1, -1]):
@@ -261,6 +265,10 @@ class Blueprint:
         return cells
 
     def getSolutionCoveredCells(self, solution):
+        """
+        :param solution: Solution needs to be valid!!!
+        :return: list of covered cells
+        """
         cells = []
         for router in solution:
             if not compareLists(router, [-1, -1]):

@@ -75,6 +75,7 @@ def geneticAlgorithm(blueprint):
     startAlgorithm = time.process_time()
     # while time.process_time() - startAlgorithm > 10: # 10 seconds processing
     for index in range(10):
+
         rand1, rand2 = random.randint(0, len(population) - 1), random.randint(0, len(population) - 1)
         co1, co2 = crossover(population[rand1], population[rand2])
 
