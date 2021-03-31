@@ -36,8 +36,7 @@ def TabuSearch(blueprint, solution):
         print('\n\n### iter {}###  Current_Objvalue: {}, Best_Objvalue: {}'.format(iter, currentValue, bestValue))
 
         for i in tabuStructure:
-            candidateSolution = hillClimbing.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
-            candidateValue = hillClimbing.value(blueprint, candidateSolution)
+            candidateSolution, candidateValue = hillClimbing.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
             tabuStructure[i]['MoveValue'] = candidateValue
 
         while True:
@@ -46,8 +45,7 @@ def TabuSearch(blueprint, solution):
             tabuTime = tabuStructure[bestMove]["tabuTime"]
 
             if tabuTime < iter:
-                currentSolution = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
-                currentValue = hillClimbing.value(blueprint, solution)
+                currentSolution, currentValue = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
 
                 if moveValue < bestValue:
                     bestSolution = currentSolution
@@ -55,10 +53,10 @@ def TabuSearch(blueprint, solution):
                     print("   best_move: {}, Objvalue: {} => Best Improving => Admissible".format(bestMove, currentValue))
                     terminate = 0
                 else:
-                    print("   ##Termination: {}## best_move: {}, Objvalue: {} => Least non-improving => " "Admissible".format(Terminate, bestMove, currentValue))
+                    print("   ##Termination: {}## best_move: {}, Objvalue: {} => Least non-improving => " "Admissible".format(terminate, bestMove, currentValue))
                     terminate += 1
 
-                tabuStructure[bestMove]['tabu_time'] = iter + tabuTenure
+                tabuStructure[bestMove]['tabuTime'] = iter + tabuTenure
                 iter += 1
                 break
 
@@ -66,8 +64,7 @@ def TabuSearch(blueprint, solution):
 
                 if moveValue < bestValue:
                     # make the move
-                    currentSolution = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
-                    currentValue = hillClimbing.value(blueprint, currentSolution)
+                    currentSolution, currentValue = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
                     bestSolution = currentSolution
                     bestValue = currentValue
                     print("   best_move: {}, Objvalue: {} => Aspiration => Admissible".format(bestMove, currentValue))
