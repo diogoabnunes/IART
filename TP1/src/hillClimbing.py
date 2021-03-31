@@ -143,7 +143,7 @@ def hillClimbing(blueprint, solution):
     solutionValue = value(blueprint, solution)
 
     iteration = 0
-
+    upgrade = False
     while iteration <= 1:
         for numRouters in range(blueprint.getMaxRouters(), -1, -1):
             for i in range(numRouters):
@@ -159,7 +159,18 @@ def hillClimbing(blueprint, solution):
                             solutionValue = neighbourValue
                             solution = neighbourSolution.copy()
                             iteration = 0
+                            upgrade = True
+                            break
+                    if upgrade:
+                        break
+                if upgrade:
+                    break
+            if upgrade:
+                break
         iteration += 1
+        if upgrade:
+            upgrade = False
+            break
 
     return solution
 
@@ -188,6 +199,7 @@ def hillClimbingSteepestAscend(blueprint, solution):
 
 
     return solution
+
 
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
