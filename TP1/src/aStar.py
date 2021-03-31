@@ -20,7 +20,7 @@ class Node:
         return (processedCost*self.cost + self.heurisitic) < (processedCost*other.cost + other.heurisitic)
 
     def __repr__(self):
-        return ('({0},{1})'.format(self.position, self.cost + self.heurisitic))
+        return '({0},{1})'.format(self.position, self.cost + self.heurisitic)
 
 
 def aStar(blueprint, startCoord, endCoord):

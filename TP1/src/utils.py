@@ -17,6 +17,14 @@ def setGridContent(grid, content, x, y=None):
         return None
 
 
+def routersPlaced(solution) -> int:
+    counter = 0
+    for router in solution:
+        if router != [-1, -1]:
+            counter += 1
+    return counter
+
+
 def compareLists(l1, l2):
     if functools.reduce(lambda x, y: x and y, map(lambda p, q: p == q, l1, l2), True):
         return True

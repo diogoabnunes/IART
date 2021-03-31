@@ -1,7 +1,7 @@
 import random
 import time
 import blueprint as bp
-import utils
+from utils import *
 import heapq
 
 """
@@ -41,15 +41,6 @@ def generateMaxRoutersSolution(blueprint):
             continue
         solution.append([x, y])
     return solution
-
-
-def routersPlaced(solution) -> int:
-    counter = 0
-    for router in solution:
-        if not utils.compareLists(router, [-1, -1]):
-            counter += 1
-    return counter
-
 
 def getIndiceOfLastNonEmptyRouter(solution) -> int:
     for i in range(0, len(solution)):
@@ -161,7 +152,7 @@ def hillClimbing(blueprint, solution):
                         neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters)
                         if neighbourSolution is None and neighbourValue is None:
                             continue
-                        if utils.compareLists(solution, neighbourSolution):
+                        if compareLists(solution, neighbourSolution):
                             continue
 
                         if neighbourValue > solutionValue:
@@ -187,7 +178,7 @@ def hillClimbingSteepestAscend(blueprint, solution):
                         neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters)
                         if neighbourSolution is None and neighbourValue is None:
                             continue
-                        if utils.compareLists(solution, neighbourSolution):
+                        if compareLists(solution, neighbourSolution):
                             continue
 
                         if neighbourValue > steepest[1]:
@@ -202,7 +193,6 @@ if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
 
     startTime = time.process_time()
-    # blueprint.getCellCoverage((2,15))
 
     while True:
         solution = generateMaxRoutersSolution(blueprint)
@@ -226,4 +216,3 @@ if __name__ == "__main__":
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
-

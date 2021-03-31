@@ -24,12 +24,18 @@ class Blueprint:
             self.cellsCoverage = {}
             self.grid = []
             self.gridVisited = []
+            self.validPositions = []
 
             for i in range(H):
                 row = []
                 for j in range(W):
                     row.append(file[i + 3][j])
                 self.grid.append(row)
+
+            for i in range(self.size[1]):
+                for j in range(self.size[0]):
+                    if self.atGrid((i, j)) != "#":
+                        self.validPositions.append([i, j])
 
     def printGrid(self):
         rowsInStr = []
@@ -207,6 +213,10 @@ class Blueprint:
                 self.cellsCoverage[(x, y)] = cellsCovered
 
     def getSolutionBackboneCells(self, solution):
+        """
+        :param solution: Solution needs to be valid!!!
+        :return: list of backbone cells
+        """
         cells = []
         for router in solution:
             if not compareLists(router, [-1, -1]):
@@ -216,6 +226,10 @@ class Blueprint:
         return cells
 
     def getSolutionCoveredCells(self, solution):
+        """
+        :param solution: Solution needs to be valid!!!
+        :return: list of covered cells
+        """
         cells = []
         for router in solution:
             if not compareLists(router, [-1, -1]):
@@ -246,32 +260,13 @@ class Blueprint:
 
 
 if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/charleston_road.in")
-
+    blueprint = Blueprint("../inputs/example.in")
     startTime = time.process_time()
-    # aStar(blueprint, (1, 2), (5, 2))
-    blueprint.printPath(aStar(blueprint, (0,0), (90, 120)))
-    # blueprint.calculateAllPaths((1, 1))
+
+    blueprint.printGrid()
+    print(blueprint.validPositions)
+
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
 
-    # blueprint = Blueprint("../inputs/labirinto.in")
-    #
-    # startTime = time.process_time()
-    # # aStar(blueprint, (1, 2), (5, 2))
-    # blueprint.printPath(aStar(blueprint, (1, 2), (5,2)))
-    # #    blueprint.calculateAllPaths((1, 1))
-    # endTime = time.process_time()
-    # print(f"Time: {endTime - startTime} seconds")
-    # blueprint.reset()
-
-    # blueprint = Blueprint("../inputs/better_example.in")
-    #
-    # startTime = time.process_time()
-    # # aStar(blueprint, (1, 2), (5, 2))
-    # blueprint.printPath(aStar(blueprint, (0,0), (21, 7)))
-    # #    blueprint.calculateAllPaths((1, 1))
-    # endTime = time.process_time()
-    # print(f"Time: {endTime - startTime} seconds")
-    # blueprint.reset()
