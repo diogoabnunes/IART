@@ -1,17 +1,6 @@
-'''
-H: Rows
-W: Columns
-R: Radius
-Pb: Backbone Cost ("Price Backbone")
-Pr: Router Cost ("Price Router")
-B: Budget
-br: Row of initial cell that is already connected to the backbone
-bc: Column of initial cell that is already connected to the backbone
-'''
-
-import time
-import blueprint as bp
-from aStar import *
+from geneticAlgorithm import *
+from hillClimbing import *
+from tabuSearch import *
 
 
 def simulatedAnnealing():
@@ -20,10 +9,6 @@ def simulatedAnnealing():
 
 def hillClimbing():
     print("Algorithm: Hill Climbing (not implemented yet)\n")
-
-
-def geneticAlgorithm():
-    print("Algorithm: Genetic Algorithm (not implemented yet)\n")
 
 
 def tabuSearch():
@@ -68,6 +53,8 @@ def menu():
         print("[0] Quit")
         val = input("Option: ")
 
+        blueprint = bp.Blueprint(file)
+
         startTime = time.time()
 
         if val == str(1):
@@ -75,7 +62,7 @@ def menu():
         elif val == str(2):
             hillClimbing()
         elif val == str(3):
-            geneticAlgorithm()
+            geneticAlgorithm(blueprint)
         elif val == str(4):
             tabuSearch()
         elif val == str(0):

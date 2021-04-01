@@ -48,21 +48,7 @@ def getIndiceOfLastNonEmptyRouter(solution) -> int:
             return len(solution) - i - 1
 
 
-def value(blueprint, solution):  # also checks if solution is valid
-    t = len(blueprint.getSolutionCoveredCells(solution))
-    N = len(blueprint.getSolutionBackboneCells(solution))
-    M = routersPlaced(solution)
-    remainingBudget = blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
-    if (remainingBudget < 0): return None
 
-    # print(solution)
-    # print('\tt :', t)
-    # print('\tN :', N)
-    # print('\tM :', M)
-    # print('\tremainingBudget :', remainingBudget)
-    # print('\ttotal :', 1000 * t + remainingBudget)
-
-    return 1000 * t + remainingBudget
 
 
 def randomNeighbour(blueprint, solution: list):  # can return an infeasable solution
