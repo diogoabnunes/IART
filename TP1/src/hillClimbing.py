@@ -34,8 +34,8 @@ def generateMaxRoutersSolution(blueprint):
     solution = []
     auxList = [0] * blueprint.getMaxRouters()
     for i in auxList:
-        x = random.randint(0, blueprint.size[0] - 1)
-        y = random.randint(0, blueprint.size[1] - 1)
+        x = random.randint(0, blueprint.size[1] - 1)
+        y = random.randint(0, blueprint.size[0] - 1)
         if not blueprint.validPosition(x, y):
             auxList.append(i)
             continue

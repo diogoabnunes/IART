@@ -42,7 +42,7 @@ class Blueprint:
 
             for i in range(self.size[1]):
                 for j in range(self.size[0]):
-                    if self.atGridGenetic((i, j)) != "#":
+                    if self.atGrid((i, j)) != "#":
                         self.validPositions.append([i, j])
 
     def printGrid(self):
@@ -109,18 +109,6 @@ class Blueprint:
         """
         try:
             if type(x) == tuple or type(x) == list:
-                return self.grid[x[1]][x[0]]
-            return self.grid[y][x]
-        except IndexError:
-            return False
-
-    def atGridGenetic(self, x, y=None):
-        """
-        Returns the content of a position of the grid.
-        Accepts one parameter only when it's a tuple
-        """
-        try:
-            if type(x) == tuple or type(x) == list:
                 return self.grid[x[0]][x[1]]
             return self.grid[x][y]
         except IndexError:
@@ -139,7 +127,7 @@ class Blueprint:
         """
         Checks if a position is valid and doesn't have a wall.
         """
-        atGrid = self.atGridGenetic(x, y)
+        atGrid = self.atGrid(x, y)
         if not atGrid:
             return False
         return atGrid != '#'
