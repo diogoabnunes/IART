@@ -39,7 +39,7 @@ def generateMaxRoutersSolution(blueprint):
         if not blueprint.validPosition(x, y):
             auxList.append(i)
             continue
-        solution.append([x, y])
+        solution.append((x, y))
     return solution
 
 def getIndiceOfLastNonEmptyRouter(solution) -> int:

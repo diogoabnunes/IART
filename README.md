@@ -8,3 +8,4 @@
 - finish tabu !
 - enhance efficiency !
 - change coordinates !!
+- end lists !!
