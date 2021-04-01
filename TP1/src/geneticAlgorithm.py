@@ -21,29 +21,43 @@ def generateInitialPopulation(blueprint):
 
     maxLength = blueprint.getMaxRouters()
     validPositions = blueprint.validPositions
-    validPositions.append([-1, -1])
+    validPositions.append((-1, -1))
 
-    for i in range(30):
+    iteration = 0
+
+    while True:
         individualSol = []
         for j in range(maxLength):
             rand = random.randint(0, len(validPositions) - 1)
             while validPositions[rand] in individualSol:
                 rand = random.randint(0, len(validPositions) - 1)
             individualSol.append(validPositions[rand])
-        individualSol.sort(reverse=True, key=lambda elem: value(blueprint, elem))
-        population.append(individualSol)
+            individualSol.sort(reverse=True, key=lambda x: x)
+
+        if value(blueprint, individualSol) is not None:
+            iteration += 1
+            population.append(individualSol)
+
+        if iteration == 20:
+            break
+
+    population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
 
     for i in population:
         print(i)
+        print(value(blueprint, i))
+        print("")
 
     return population
 
 
 def geneticAlgorithm(blueprint):
     population = generateInitialPopulation(blueprint)  # 1
+
+
     """
-    1. Generate initial population: 30 (of solutions: lists of routers)
-    2. Order population by value of each solution
+    1. Generate initial population: 30 (of solutions: lists of routers): DONE
+    2. Order population by value of each solution: DONE
     3. while iterations < 20:
     4.     for i in range(len(population)):
     5.         Randomize 2 solutions on the first half of solutions (better ones)
@@ -68,3 +82,5 @@ if __name__ == "__main__":
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
+
+

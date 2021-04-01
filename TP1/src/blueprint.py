@@ -43,7 +43,7 @@ class Blueprint:
             for i in range(self.size[1]):
                 for j in range(self.size[0]):
                     if self.atGrid((i, j)) != "#":
-                        self.validPositions.append([i, j])
+                        self.validPositions.append((i, j))
 
     def printGrid(self):
         rowsInStr = []
@@ -236,7 +236,7 @@ class Blueprint:
         """
         cells = []
         for router in solution:
-            if not compareLists(router, [-1, -1]):
+            if router != (-1, -1):
                 routerCells = self.accessPathsDict(router)
                 cells.extend(routerCells)
         cells = list(dict.fromkeys(cells))
@@ -249,7 +249,7 @@ class Blueprint:
         """
         cells = []
         for router in solution:
-            if not compareLists(router, [-1, -1]):
+            if router != (-1, -1):
                 coveredCells = self.accessCoverageDict(router)
                 cells.extend(coveredCells)
         cells = list(dict.fromkeys(cells))
