@@ -13,9 +13,9 @@ def distance(pointA, pointB):
 def setGridContent(grid, content, x, y=None):
     try:
         if type(x) == tuple:
-            grid[x[0]][x[1]] = content
+            grid[x] = content
             return
-        grid[x][y] = content
+        grid[(x, y)] = content
         return
     except IndexError:
         return None
