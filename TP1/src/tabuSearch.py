@@ -37,7 +37,8 @@ def TabuSearch(blueprint, solution):
 
         for i in tabuStructure:
             candidateSolution, candidateValue = hillClimbing.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
-            tabuStructure[i]['MoveValue'] = candidateValue
+            if candidateValue is not None:
+                tabuStructure[i]['MoveValue'] = candidateValue
 
         while True:
             bestMove = max(tabuStructure, key =lambda x: tabuStructure[x]['MoveValue'])
@@ -62,7 +63,7 @@ def TabuSearch(blueprint, solution):
 
             else:
 
-                if moveValue < bestValue:
+                if moveValue > bestValue:
                     # make the move
                     currentSolution, currentValue = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
                     bestSolution = currentSolution
