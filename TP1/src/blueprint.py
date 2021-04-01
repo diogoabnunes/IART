@@ -1,5 +1,13 @@
 """
 Blueprint class
+H: Rows
+W: Columns
+R: Radius
+Pb: Backbone Cost ("Price Backbone")
+Pr: Router Cost ("Price Router")
+B: Budget
+br: Row of initial cell that is already connected to the backbone
+bc: Column of initial cell that is already connected to the backbone
 """
 import time
 from aStar import *
@@ -101,12 +109,21 @@ class Blueprint:
         """
         try:
             if type(x) == tuple or type(x) == list:
-                return self.grid[x[1]][x[0]]
-            return self.grid[y][x]
+                return self.grid[x[0]][x[1]]
+            return self.grid[x][y]
         except IndexError:
             return False
 
     def validPosition(self, x, y=None):
+        """
+        Checks if a position is valid and doesn't have a wall.
+        """
+        atGrid = self.atGrid(x, y)
+        if not atGrid:
+            return False
+        return atGrid != '#'
+
+    def validPositionGenetic(self, x, y=None):
         """
         Checks if a position is valid and doesn't have a wall.
         """

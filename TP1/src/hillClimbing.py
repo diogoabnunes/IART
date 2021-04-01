@@ -34,12 +34,12 @@ def generateMaxRoutersSolution(blueprint):
     solution = []
     auxList = [0] * blueprint.getMaxRouters()
     for i in auxList:
-        x = random.randint(0, blueprint.size[0] - 1)
-        y = random.randint(0, blueprint.size[1] - 1)
+        x = random.randint(0, blueprint.size[1] - 1)
+        y = random.randint(0, blueprint.size[0] - 1)
         if not blueprint.validPosition(x, y):
             auxList.append(i)
             continue
-        solution.append([x, y])
+        solution.append((x, y))
     return solution
 
 def getIndiceOfLastNonEmptyRouter(solution) -> int:
@@ -48,21 +48,7 @@ def getIndiceOfLastNonEmptyRouter(solution) -> int:
             return len(solution) - i - 1
 
 
-def value(blueprint, solution):  # also checks if solution is valid
-    t = len(blueprint.getSolutionCoveredCells(solution))
-    N = len(blueprint.getSolutionBackboneCells(solution))
-    M = routersPlaced(solution)
-    remainingBudget = blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
-    if (remainingBudget < 0): return None
 
-    # print(solution)
-    # print('\tt :', t)
-    # print('\tN :', N)
-    # print('\tM :', M)
-    # print('\tremainingBudget :', remainingBudget)
-    # print('\ttotal :', 1000 * t + remainingBudget)
-
-    return 1000 * t + remainingBudget
 
 
 def randomNeighbour(blueprint, solution: list):  # can return an infeasable solution
