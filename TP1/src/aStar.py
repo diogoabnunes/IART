@@ -16,7 +16,7 @@ class Node:
 
     # Sort nodes
     def __lt__(self, other):
-        processedCost = 0.8
+        processedCost = 1
         return (processedCost*self.cost + self.heurisitic) < (processedCost*other.cost + other.heurisitic)
 
     def __repr__(self):
@@ -30,7 +30,7 @@ def aStar(blueprint, startCoord, endCoord):
             blueprint - class Blueprint
     """
     startCoord = tuple(startCoord)
-    if (not blueprint.validPosition(startCoord)) or (not blueprint.atGrid(endCoord)):
+    if (not blueprint.atGrid(startCoord)) or (not blueprint.atGrid(endCoord)):
         return None
 
     startNode = Node(startCoord, None, distance(startCoord, endCoord))
@@ -39,7 +39,7 @@ def aStar(blueprint, startCoord, endCoord):
     open = [startNode]
     heapq.heapify(open)
     closed = []
-    # totalNodes = blueprint.size[0] * blueprint.size[1]
+    # totalNodes = blueprint.width * blueprint.height
     # numNodesProcessed = 0
     # first_time = True
     while open:
@@ -61,9 +61,9 @@ def aStar(blueprint, startCoord, endCoord):
                 path.append(currentNode.position)
                 currentNode = currentNode.parent
             path.append(currentNode.position)
-            return list(path[1:])[::-1]
+            return path[::-1]
 
-        neighbours = blueprint.getNeighbours(currentNode.position)
+        neighbours = blueprint.getCellNeighbours(currentNode.position)
         for n in neighbours:
             if isDiagonal(n, currentNode.position):
                 moveCost = math.sqrt(2)
@@ -82,7 +82,7 @@ def aStar(blueprint, startCoord, endCoord):
     return None
 
 def isDiagonal(pos1, pos2):
-    xdiff = abs(pos1[0] - pos2[0])
-    ydiff = abs(pos1[1] - pos2[1])
+    ydiff = abs(pos1[0] - pos2[0])
+    xdiff = abs(pos1[1] - pos2[1])
 
     return xdiff != 0 and ydiff != 0

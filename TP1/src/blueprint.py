@@ -10,8 +10,8 @@ br: Row of initial cell that is already connected to the backbone
 bc: Column of initial cell that is already connected to the backbone
 """
 import time
-from aStar import *
 from utils import *
+import kruskal
 
 class Blueprint:
     def __init__(self, filename):
@@ -22,13 +22,15 @@ class Blueprint:
             [Pb, Pr, B] = [int(x) for x in file[1].split()]
             [br, bc] = [int(x) for x in file[2].split()]
 
-            self.size = (W, H)
+            self.width = W
+            self.height = H
             self.routerRadius = R
             self.backboneCost = Pb
             self.routerCost = Pr
             self.budget = B
             self.backbonePosition = (bc, br)
-            self.paths = {}
+            self.msts = {}
+            self.mstPaths = {}
             self.cellsCoverage = {}
             self.grid = []
             self.gridVisited = []
@@ -40,8 +42,8 @@ class Blueprint:
                     row.append(file[i + 3][j])
                 self.grid.append(row)
 
-            for i in range(self.size[1]):
-                for j in range(self.size[0]):
+            for i in range(self.height):
+                for j in range(self.width):
                     if self.atGrid((i, j)) != "#":
                         self.validPositions.append((i, j))
 
@@ -53,13 +55,13 @@ class Blueprint:
         print(f"Blueprint:\n{gridStr}")
 
     def print(self):
-        print(f"Rows: {self.size[1]} - Columns: {self.size[0]}")
+        print(f"Rows: {self.height} - Columns: {self.width}")
         print(f"Router Radius: {self.routerRadius}")
         print(f"Backbone Cost: {self.backboneCost} - Router Cost: {self.routerCost} - Budget: {self.budget}")
         print(f"Backbone coord: {self.backbonePosition}")
         self.printGrid()
 
-    def getNeighbours(self, coord):
+    def getCellNeighbours(self, coord):
         """ Returned neighbours do not include walls """
         neighbours = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
 
@@ -77,7 +79,7 @@ class Blueprint:
             neighbours.remove((0, -1))
             neighbours.remove((1, -1))
 
-        if coord[0] == self.size[0] - 1:
+        if coord[0] == self.height - 1:
             try:
                 neighbours.remove((1, -1))
             except:
@@ -85,7 +87,7 @@ class Blueprint:
             neighbours.remove((1, 0))
             neighbours.remove((1, 1))
 
-        if coord[1] == self.size[1] - 1:
+        if coord[1] == self.width - 1:
             try:
                 neighbours.remove((-1, 1))
             except:
@@ -109,8 +111,14 @@ class Blueprint:
         """
         try:
             if type(x) == tuple or type(x) == list:
-                return self.grid[x[0]][x[1]]
-            return self.grid[x][y]
+                if 0 <= x[0] <= self.height and 0 <= x[1] <= self.width:
+                    return self.grid[x[0]][x[1]]
+                else:
+                    raise IndexError()
+            if 0 <= x <= self.height and 0 <= x <= self.width:
+                return self.grid[x][y]
+            else:
+                raise IndexError()
         except IndexError:
             return False
 
@@ -133,7 +141,7 @@ class Blueprint:
         return atGrid != '#'
 
     def reset(self):
-        self.paths = {}
+        self.msts = {}
         self.cellsCoverage = {}
 
     def printPath(self, returnFromAStar):
@@ -153,13 +161,6 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def calculateAllPaths(self, endCoord):
-        self.paths = {}
-        for i in range(self.size[0]):
-            for j in range(self.size[1]):
-                if not self.validPosition(i, j): continue
-                self.paths[(i, j)] = aStar(self, (i, j), endCoord)
-
     def getMaxRouters(self) -> int:
         return int(self.budget / self.routerCost)
 
@@ -172,21 +173,21 @@ class Blueprint:
             return None
         ret = []
 
-        upperCoverage = max(0, coords[1] - self.routerRadius)
-        leftCoverage = max(0, coords[0] - self.routerRadius)
-        rightCoverage = min(self.size[0], coords[0] + self.routerRadius)
-        bottomCoverage = min(self.size[1], coords[1] + self.routerRadius)
+        upperCoverage = max(0, coords[0] - self.routerRadius)
+        leftCoverage = max(0, coords[1] - self.routerRadius)
+        rightCoverage = min(self.width, coords[1] + self.routerRadius)
+        bottomCoverage = min(self.height, coords[0] + self.routerRadius)
 
         # getWalls
         walls = []
-        for i in range(leftCoverage, rightCoverage + 1):
-            for j in range(upperCoverage, bottomCoverage + 1):
+        for i in range(upperCoverage, bottomCoverage + 1):
+            for j in range(leftCoverage, rightCoverage + 1):
                 if self.atGrid((i, j)) == "#":
                     walls.append((i, j))
 
         # min e max [w, v]
-        for x in range(leftCoverage, rightCoverage + 1):
-            for y in range(upperCoverage, bottomCoverage + 1):
+        for x in range(upperCoverage, bottomCoverage + 1):
+            for y in range(leftCoverage, rightCoverage + 1):
                 if self.atGrid((x, y)) == ".":
                     (a, b) = (coords[0], coords[1])
 
@@ -224,23 +225,18 @@ class Blueprint:
         """
         Gets the router's network coverage for all cells
         """
-        for x in range(blueprint.size[0]):
-            for y in range(blueprint.size[1]):
+        for x in range(blueprint.width):
+            for y in range(blueprint.height):
                 cellsCovered = blueprint.getCellCoverage((x, y))
                 self.cellsCoverage[(x, y)] = cellsCovered
 
-    def getSolutionBackboneCells(self, solution):
-        """
-        :param solution: Solution needs to be valid!!!
-        :return: list of backbone cells
-        """
-        cells = []
-        for router in solution:
-            if router != (-1, -1):
-                routerCells = self.accessPathsDict(router)
-                cells.extend(routerCells)
-        cells = list(dict.fromkeys(cells))
-        return cells
+    # def getSolutionPathsDistPrediction(self, solution):
+    #     """
+    #     :param solution: Solution needs to be valid!!!
+    #     :return: list of backbone cells
+    #     """
+    #     mst = self.accessPathsDict(solution)
+    #     return mst.calcCostPrediction()
 
     def getSolutionCoveredCells(self, solution):
         """
@@ -257,21 +253,32 @@ class Blueprint:
 
     def accessCoverageDict(self, router):
         try:
-            coverage = self.cellsCoverage[tuple(router)]
+            coverage = self.cellsCoverage[router]
             return coverage
         except KeyError:
             coverage = self.getCellCoverage(router)
-            self.cellsCoverage[tuple(router)] = coverage
+            self.cellsCoverage[router] = coverage
             return coverage
 
-    def accessPathsDict(self, router):
+    def accessMstDict(self, solution):
         try:
-            coverage = self.paths[tuple(router)]
-            return coverage
+            mst = self.msts[tuple(solution)]
+            return mst
         except KeyError:
-            coverage = aStar(self, router, self.backbonePosition)
-            self.paths[tuple(router)] = coverage
-            return coverage
+            graph = kruskal.buildGraphWithSolution(solution, self.backbonePosition)
+            mst = graph.kruskal()
+            self.msts[tuple(solution)] = mst
+            return mst
+
+    def accessMstPathsDict(self, solution):
+        try:
+            paths = self.mstPaths[tuple(solution)]
+            return paths
+        except KeyError:
+            mst = self.accessMstDict(solution)
+            paths = mst.getPaths(self)
+            self.mstPaths[tuple(solution)] = paths
+            return paths
 
 # Blueprint end
 

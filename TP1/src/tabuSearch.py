@@ -2,6 +2,7 @@ import random
 import time
 import blueprint as bp
 import hillClimbing
+from utils import *
 
 def getTabuStructure(blueprint,solution):
     dict = {}
@@ -26,9 +27,9 @@ def TabuSearch(blueprint, solution):
     tabuTenure = 10
     tabuStructure = getTabuStructure(blueprint, solution)
     bestSolution = solution
-    bestValue = hillClimbing.value(blueprint, bestSolution)
+    bestValue = value(blueprint, bestSolution)
     currentSolution = solution
-    currentValue = hillClimbing.value(blueprint, currentSolution)
+    currentValue = value(blueprint, currentSolution)
 
     iter = 1
     terminate = 0

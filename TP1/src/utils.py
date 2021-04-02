@@ -39,19 +39,11 @@ def printGrid(grid):
 
 def value(blueprint, solution):  # also checks if solution is valid
     t = len(blueprint.getSolutionCoveredCells(solution))
-    N = len(blueprint.getSolutionBackboneCells(solution))
+    N = len(blueprint.accessMstPathsDict(solution))
     M = routersPlaced(solution)
     remainingBudget = blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
     if remainingBudget < 0:
         return None
-
-    # print(solution)
-    # print('\tt :', t)
-    # print('\tN :', N)
-    # print('\tM :', M)
-    # print('\tremainingBudget :', remainingBudget)
-    # print('\ttotal :', 1000 * t + remainingBudget)
-
     return 1000 * t + remainingBudget
 
 def routersPlaced(solution) -> int:
@@ -79,8 +71,8 @@ def generateMaxRoutersSolution(blueprint):
     solution = []
     auxList = [0] * blueprint.getMaxRouters()
     for i in auxList:
-        x = random.randint(0, blueprint.size[1] - 1)
-        y = random.randint(0, blueprint.size[0] - 1)
+        x = random.randint(0, blueprint.height - 1)
+        y = random.randint(0, blueprint.width - 1)
         if not blueprint.validPosition(x, y):
             auxList.append(i)
             continue

@@ -1,5 +1,6 @@
 import utils
 from hillClimbing import *
+import aStar
 
 class Node:
     def __init__(self, coord, kruskalParent = None, kruskalRank = 0):
@@ -8,15 +9,18 @@ class Node:
         self.kruskalRank = kruskalRank
 
     def __eq__(self, o) -> bool:
+        if o is None: return False
         return self.coord == o.coord
 
     def retrieveRoot(self):
         if self.kruskalParent is None:
             return self
         current = self.kruskalParent
+        previous = self
         while current != None:
+            previous = current
             current = current.kruskalParent
-        return current
+        return previous
 
 class Edge:
     def __init__(self, nodeFrom : Node, nodeTo : Node, cost):
@@ -31,6 +35,14 @@ class Graph:
     def __init__(self, nodes, edges):
         self.nodes = nodes
         self.edges = edges
+        self.cost = 0
+
+    # def calcCostPrediction(self):
+    #     if self.cost != 0:
+    #         return self.cost
+    #     for edge in self.edges:
+    #         self.cost += edge.cost
+    #     return self.cost
 
     def kruskal(self):
         sortedEdges = sorted(self.edges)
@@ -46,6 +58,13 @@ class Graph:
                 chooseRoot(bestEdge.nodeFrom, bestEdge.nodeTo)
 
         return Graph(self.nodes, selectedEdges)
+
+    def getPaths(self, blueprint):
+        backboneCells = []
+        for edge in self.edges:
+            path = aStar.aStar(blueprint, edge.nodeFrom.coord, edge.nodeTo.coord)
+            backboneCells.extend(path)
+        return backboneCells
 
 def chooseRoot(node1 : Node, node2 : Node):
     node1 = node1.retrieveRoot()

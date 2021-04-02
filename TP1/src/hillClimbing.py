@@ -67,6 +67,11 @@ def hillClimbingSteepestAscend(blueprint, solution):
 
 
 if __name__ == "__main__":
+    seed = random.randrange(999999999)
+    rng = random.Random(seed)
+    print("Seed was:", seed)
+    random.seed(seed)
+    # random.seed(118831603)
     blueprint = bp.Blueprint("../inputs/example.in")
 
     startTime = time.process_time()
