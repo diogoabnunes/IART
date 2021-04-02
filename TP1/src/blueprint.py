@@ -285,4 +285,14 @@ class Blueprint:
             self.mstPaths[tuple(solution)] = paths
             return paths
 
+    def printGrid(self):
+        rowsInStr = []
+        for row in self.grid:
+            rowsInStr.append(''.join(row))
+        gridStr = '\n'.join(rowsInStr)
+        print(gridStr)
 # Blueprint end
+
+if __name__ == "__main__":
+    blueprint = Blueprint("../inputs/lets_go_higher.in")
+    blueprint.printGrid()

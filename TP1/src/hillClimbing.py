@@ -1,8 +1,6 @@
-import random
 import time
 import blueprint as bp
 from utils import *
-import heapq
 
 def hillClimbing(blueprint, solution):
     solutionValue = value(blueprint, solution)
@@ -33,9 +31,6 @@ def hillClimbing(blueprint, solution):
             if upgrade:
                 break
         iteration += 1
-        if upgrade:
-            upgrade = False
-            break
 
     return solution
 
@@ -64,7 +59,6 @@ def hillClimbingSteepestAscend(blueprint, solution):
 
 
     return solution
-
 
 if __name__ == "__main__":
     seed = random.randrange(999999999)

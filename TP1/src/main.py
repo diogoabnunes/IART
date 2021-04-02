@@ -69,7 +69,7 @@ def menu():
         elif val == str(3):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)
         elif val == str(4):
-            solution = tabuSearch.TabuSearch(blueprint, solution)
+            solution = tabuSearch.tabuSearch(blueprint, solution)
         elif val == str(0): 
             break
         else:

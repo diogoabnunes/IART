@@ -39,20 +39,9 @@ def aStar(blueprint, startCoord, endCoord):
     open = [startNode]
     heapq.heapify(open)
     closed = []
-    # totalNodes = blueprint.width * blueprint.height
-    # numNodesProcessed = 0
-    # first_time = True
-    while open:
-        # numNodesProcessed += 1
-        currentNode = heapq.heappop(open)
-        # if numNodesProcessed < 50:
-        #     if first_time:
-        #         print(str(numNodesProcessed) + "/" + str(totalNodes) + "   -   Position: " + str(currentNode.position))
-        #         first_time = False
-        #     else:
-        #         print(str(numNodesProcessed) + "/" + str(totalNodes),"- Position:" , currentNode.position, "- Diagonal:", isDiagonal(currentNode.position, currentNode.parent.position), "- Cost:", currentNode.cost + currentNode.heurisitic)
-        #         print(open)
 
+    while open:
+        currentNode = heapq.heappop(open)
         closed.append(currentNode)
 
         if currentNode == endNode:

@@ -22,7 +22,7 @@ def getTabuStructure(blueprint,solution):
 
     return dict
 
-def TabuSearch(blueprint, solution):
+def tabuSearch(blueprint, solution):
     # Parameters
     tabuTenure = 10
     tabuStructure = getTabuStructure(blueprint, solution)
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
 
     startTime = time.process_time()
-    s2 = TabuSearch(blueprint, solution)
+    s2 = tabuSearch(blueprint, solution)
     endTime = time.process_time()
 
     print("\nAfter Tabu Search:", s2, ":", utils.value(blueprint, s2))
