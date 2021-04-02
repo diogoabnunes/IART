@@ -67,6 +67,7 @@ def generateInitialPopulation(blueprint):
             population.append(individualSol)
 
         if iteration == 30:
+            print("Generating initial population: Done")
             break
 
     population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
@@ -84,7 +85,7 @@ def geneticAlgorithm(blueprint):
     lastIteration = 20
 
     while iteration < lastIteration:
-        print("Generation... " + str(iteration) + "/" + str(lastIteration))
+        print("Generation... " + str(iteration) + "/20")
         nextGeneration = []
 
         for i in range(int(len(population))):
@@ -102,6 +103,8 @@ def geneticAlgorithm(blueprint):
         population = nextGeneration
         population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
         iteration += 1
+
+    print("Generation... Done!")
 
     return max(population, key=lambda elem: value(blueprint, elem))
 

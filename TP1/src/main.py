@@ -42,15 +42,14 @@ def menu():
         
         blueprint = bp.Blueprint(file)
         
-        print("\nChoose algorithm to run")
+        print("Choose algorithm to run")
         print("[1] Simulated Annealing")
-        print("[2] Hill Climbing")
-        print("[3] Genetic Algorithm")
-        print("[4] Tabu Search")
+        print("[2] Hill Climbing: Normal")
+        print("[3] Hill Climbing: Steepest Ascend")
+        print("[4] Genetic Algorithm")
+        print("[5] Tabu Search")
         print("[0] Quit")
         val = input("Option: ")
-    
-
 
         while True:
             solution = utils.generateMaxRoutersSolution(blueprint)
@@ -60,22 +59,16 @@ def menu():
                 continue
             break
 
-
         startTime = time.time()
         if val == str(1):
             simulatedAnnealing()
         elif val == str(2):
-            print("\nWhich Hill Climbing type would you like to use?")
-            print("[1] Normal Hill Climbing")
-            print("[2] Steepest Ascend")
-            val1 = input("Option: ")
-            if val1 == str(1):
-                solution = solution = hillClimbing.hillClimbing(blueprint, solution)
-            elif val == str(2):
-                solution = solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
+            solution = hillClimbing.hillClimbing(blueprint, solution)
         elif val == str(3):
-            solution = geneticAlgorithm.geneticAlgorithm(blueprint)
+            solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
         elif val == str(4):
+            solution = geneticAlgorithm.geneticAlgorithm(blueprint)
+        elif val == str(5):
             solution = tabuSearch.tabuSearch(blueprint, solution)
         elif val == str(0): 
             break
@@ -88,14 +81,14 @@ def menu():
         blueprint.printSolutionCoverage(solution)
         blueprint.printSolutionPaths(solution)
 
-        print("\nWhat do you wish to do?")
-        print("[1] Start Over")
-        print("[2] Quit")
+        print("\nContinue?")
+        print("[1] Yes")
+        print("[0] No (Quit)")
         option = input("Option: ")
         
         if option == str(1):
             continue
-        elif option == str(2):
+        elif option == str(0):
             print("\nAre you sure you want to leave?")
             print("[1] No, I am staying!")
             print("[2] Yes...")
@@ -105,6 +98,8 @@ def menu():
                 continue
             elif option1 == str(2):
                 break
+        else:
+            break
                 
 
 
