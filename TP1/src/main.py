@@ -65,7 +65,14 @@ def menu():
         if val == str(1):
             simulatedAnnealing()
         elif val == str(2):
-            solution = hillClimbing.hillClimbing(blueprint, solution)
+            print("\nWhich Hill Climbing type would you like to use?")
+            print("[1] Normal Hill Climbing")
+            print("[2] Steepest Ascend")
+            val1 = input("Option: ")
+            if val1 == str(1):
+                solution = solution = hillClimbing.hillClimbing(blueprint, solution)
+            elif val == str(2):
+                solution = solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
         elif val == str(3):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)
         elif val == str(4):
