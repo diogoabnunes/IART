@@ -93,28 +93,21 @@ def geneticAlgorithm(blueprint):
 
 
 if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/charleston_road.in")
+    blueprint = bp.Blueprint("../inputs/example.in")
 
     seed = random.randrange(999999999)
     rng = random.Random(seed)
     print("Seed was:", seed)
     random.seed(seed)
-    # random.seed(576984236)
-    # 52005: 5295197
-    # 51005: 845043316
-    # 53005: 490183077
 
     startTime = time.process_time()
-
-    blueprint.printGrid()
-
     solution = geneticAlgorithm(blueprint)
+    endTime = time.process_time()
+
     print("Genetic Algorithm")
     print(str(value(blueprint, solution)) + " points")
-    print("Router solution: " + str(solution))
+    blueprint.printSolutionCoverage(solution)
+    blueprint.printSolutionPaths(solution)
 
-    blueprint.printSolution(solution)
-
-    endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()

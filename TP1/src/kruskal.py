@@ -95,18 +95,3 @@ def buildGraphWithSolution(solution, backboneCoord):
 
     return Graph(list(nodes.values()), edges)
 
-
-if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/example.in")
-
-    while True:
-        solution = generateMaxRoutersSolution(blueprint)
-        if not validSolution(blueprint, solution):
-            continue
-        break
-
-    graph = buildGraphWithSolution(solution, blueprint.backbonePosition)
-    mst = graph.kruskal()
-
-    blueprint.reset()
-

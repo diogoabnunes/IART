@@ -74,7 +74,6 @@ if __name__ == "__main__":
     # random.seed(72710764)
     blueprint = bp.Blueprint("../inputs/example.in")
 
-    startTime = time.process_time()
 
     while True:
         solution = generateMaxRoutersSolution(blueprint)
@@ -83,18 +82,17 @@ if __name__ == "__main__":
         if value(blueprint, solution) is None:
             continue
         break
-    # v1 = value(blueprint, solution)
-    # v2 = value(blueprint, solution)
-    # print(v1)
-    # print(v2)
 
     print("Before Hill Climbing:", solution, ":", value(blueprint, solution))
+    regularStartTime = time.process_time()
     s2 = hillClimbing(blueprint, solution)
+    regularEndTime = time.process_time()
     print("After Regular Hill Climbing:", s2, ":", value(blueprint, s2))
+    print(f"Time: {regularEndTime - regularStartTime} seconds\n")
 
+    steepestStartTime = time.process_time()
     s3 = hillClimbingSteepestAscend(blueprint, solution)
+    steepestEndTime = time.process_time()
     print("After Steepest Hill Climbing:", s3, ":", value(blueprint, s3))
-
-    endTime = time.process_time()
-    print(f"Time: {endTime - startTime} seconds")
+    print(f"Time: {steepestEndTime - steepestStartTime} seconds")
     blueprint.reset()

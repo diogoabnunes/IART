@@ -48,20 +48,6 @@ class Blueprint:
                         self.validPositions.append((i, j))
                         
 
-    def printGrid(self):
-        rowsInStr = []
-        for row in self.grid:
-            rowsInStr.append(''.join(row))
-        gridStr = '\n'.join(rowsInStr)
-        print(f"Blueprint:\n{gridStr}")
-
-    def print(self):
-        print(f"Rows: {self.height} - Columns: {self.width}")
-        print(f"Router Radius: {self.routerRadius}")
-        print(f"Backbone Cost: {self.backboneCost} - Router Cost: {self.routerCost} - Budget: {self.budget}")
-        print(f"Backbone coord: {self.backbonePosition}")
-        self.printGrid()
-
     def getCellNeighbours(self, coord):
         """ Returned neighbours do not include walls """
         neighbours = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
@@ -154,8 +140,8 @@ class Blueprint:
         self.msts = {}
         self.cellsCoverage = {}
 
-    def printPath(self, returnFromAStar):
-        path = returnFromAStar
+    def printSolutionPaths(self, solution, file = None):
+        path = self.accessMstPathsDict(solution)
         print("Distance: " + str(len(path)))
 
         gridToPrint = []
@@ -163,10 +149,12 @@ class Blueprint:
             gridToPrint.append(row.copy())
 
         for coord in path:
-            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+            setGridContent(gridToPrint, "\033[37;43m" + self.atGrid(coord) + "\033[m", coord)
 
-        setGridContent(gridToPrint, "S", path[0])
-        setGridContent(gridToPrint, "E", path[-1])
+        for router in solution:
+            setGridContent(gridToPrint, "\033[37;43mr\033[m", router)
+        setGridContent(gridToPrint, "\033[37;43mb\033[m", self.backbonePosition)
+
 
         rowsInStr = []
         for row in gridToPrint:
@@ -174,7 +162,7 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def printSolution(self, solution):
+    def printSolutionCoverage(self, solution, file = None):
         cellsCovered = self.getSolutionCoveredCells(solution)
         print("Cells covered: " + str(len(cellsCovered)))
 
@@ -238,22 +226,6 @@ class Blueprint:
                         ret.append((x, y))
         return ret
 
-    def printRouterCoverage(self, cellCoverage, routerCoord):
-
-        print("Cell coverage size: " + str(len(cellCoverage)))
-        gridToPrint = self.grid.copy()
-
-        for coord in cellCoverage:
-            setGridContent(gridToPrint, "\033[30;44m" + self.atGrid(coord) + "\033[m", coord)
-
-        setGridContent(gridToPrint, 'R', routerCoord)
-
-        rowsInStr = []
-        for row in gridToPrint:
-            rowsInStr.append(''.join(row))
-        gridStr = '\n'.join(rowsInStr)
-        print(gridStr)
-
     def getAllCellsCoverage(self):
         """
         Gets the router's network coverage for all cells
@@ -314,16 +286,3 @@ class Blueprint:
             return paths
 
 # Blueprint end
-
-
-if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/charleston_road.in")
-    startTime = time.process_time()
-
-    blueprint.printGrid()
-    print(blueprint.validPositions)
-
-    endTime = time.process_time()
-    print(f"Time: {endTime - startTime} seconds")
-    blueprint.reset()
-

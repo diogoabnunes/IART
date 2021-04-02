@@ -82,9 +82,7 @@ def TabuSearch(blueprint, solution):
     return bestSolution
 
 if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/charleston_road.in")
-
-    startTime = time.process_time()
+    blueprint = bp.Blueprint("../inputs/example.in")
 
     while True:
         solution = utils.generateMaxRoutersSolution(blueprint)
@@ -95,10 +93,15 @@ if __name__ == "__main__":
         break
 
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
+
+    startTime = time.process_time()
     s2 = TabuSearch(blueprint, solution)
+    endTime = time.process_time()
+
     print("\nAfter Tabu Search:", s2, ":", utils.value(blueprint, s2))
 
-    endTime = time.process_time()
+    blueprint.printSolutionCoverage(solution)
+    blueprint.printSolutionPaths(solution)
     totalTime = endTime - startTime
     print("\nTime: {} seconds".format(totalTime))
     blueprint.reset()

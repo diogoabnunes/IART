@@ -42,8 +42,6 @@ def menu():
         
         blueprint = bp.Blueprint(file)
         
-        blueprint.printGrid()
-
         print("\nChoose algorithm to run")
         print("[1] Simulated Annealing")
         print("[2] Hill Climbing")
@@ -53,8 +51,7 @@ def menu():
         val = input("Option: ")
     
 
-        startTime = time.time()
-        
+
         while True:
             solution = utils.generateMaxRoutersSolution(blueprint)
             if not utils.validSolution(blueprint, solution):
@@ -63,27 +60,27 @@ def menu():
                 continue
             break
 
+
+        startTime = time.time()
         if val == str(1):
             simulatedAnnealing()
         elif val == str(2):
-            hillClimbing.hillClimbing(blueprint, solution)
+            solution = hillClimbing.hillClimbing(blueprint, solution)
         elif val == str(3):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)
         elif val == str(4):
-            tabuSearch.TabuSearch(blueprint, solution)
+            solution = tabuSearch.TabuSearch(blueprint, solution)
         elif val == str(0): 
             break
         else:
             print("Algorithm not found\n")
             continue
-
         endTime = time.time()
         print(f"\nTime: {endTime - startTime} seconds\n\n")
         
-        for sol in solution:
-            bp.setGridContent(blueprint.grid, "r", sol)
-        blueprint.printGrid()
-        
+        blueprint.printSolutionCoverage(solution)
+        blueprint.printSolutionPaths(solution)
+
         print("\nWhat do you wish to do?")
         print("[1] Start Over")
         print("[2] Quit")
