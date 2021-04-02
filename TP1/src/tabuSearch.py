@@ -65,7 +65,6 @@ def tabuSearch(blueprint, solution):
             else:
 
                 if moveValue > bestValue:
-                    # make the move
                     currentSolution, currentValue = utils.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
                     bestSolution = currentSolution
                     bestValue = currentValue
@@ -92,16 +91,13 @@ if __name__ == "__main__":
             continue
         break
 
-    print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
-
     startTime = time.process_time()
-    s2 = tabuSearch(blueprint, solution)
+    solution = tabuSearch(blueprint, solution)
     endTime = time.process_time()
-
-    print("\nAfter Tabu Search:", s2, ":", utils.value(blueprint, s2))
 
     blueprint.printSolutionCoverage(solution)
     blueprint.printSolutionPaths(solution)
+    
     totalTime = endTime - startTime
     print("\nTime: {} seconds".format(totalTime))
     blueprint.reset()
