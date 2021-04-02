@@ -73,7 +73,7 @@ def generateMaxRoutersSolution(blueprint):
     for i in auxList:
         x = random.randint(0, blueprint.height - 1)
         y = random.randint(0, blueprint.width - 1)
-        if not blueprint.validPosition(x, y):
+        if not blueprint.validPosition(x, y) or blueprint.atGrid(x, y) == "-":
             auxList.append(i)
             continue
         solution.append((x, y))
