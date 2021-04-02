@@ -73,7 +73,7 @@ def generateMaxRoutersSolution(blueprint):
     for i in auxList:
         x = random.randint(0, blueprint.height - 1)
         y = random.randint(0, blueprint.width - 1)
-        if not blueprint.validPosition(x, y) or blueprint.atGrid(x, y) == "-":
+        if not blueprint.validPosition(x, y) or not blueprint.notVoid(x,y):
             auxList.append(i)
             continue
         solution.append((x, y))
@@ -166,4 +166,16 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
 
     return neighbour, neighbourValue
 
+def orderRouters(solution):
+    toLast, newSol = [], []
 
+    for router in solution:
+        if router != (-1, -1):
+            newSol.append(router)
+        else:
+            toLast.append(router)
+
+    for router in toLast:
+        newSol.append(router)
+
+    return newSol
