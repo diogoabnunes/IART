@@ -20,7 +20,7 @@ def crossover(sol1, sol2):
     return child
 
 
-def mutation(blueprint, sol):
+def mutation(blueprint, sol):  # should be a change in one solution, not a combination of 2
     r = routersPlaced(sol)
     rand = random.randint(0, r - 1)
 
@@ -66,22 +66,9 @@ def generateInitialPopulation(blueprint):
 
 
 def geneticAlgorithm(blueprint):
-    """
-    1. Generate initial population: 30 (of solutions: lists of routers): DONE
-    2. Order population by value of each solution: DONE
-    3. while iterations < 20:
-    4.     for i in range(len(population)):
-    5.         Randomize 2 solutions on the first half of solutions (better ones)
-    6.         Crossover between them to get a single child
-    7.         If mutation, do it
-    8.         Append child to newpopulation
-    9.     Make population = newpopulation (new generation)
-    10.    Order population by value of each solution
-    11.END: return the best solution (i think its the first one, right?)
-    """
     population = generateInitialPopulation(blueprint)
     iteration = 0
-    lastIteration = 30
+    lastIteration = 100
 
     while iteration < lastIteration:
         nextGeneration = []
@@ -108,14 +95,30 @@ def geneticAlgorithm(blueprint):
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
 
+    seed = random.randrange(999999999)
+    rng = random.Random(seed)
+    print("Seed was:", seed)
+    random.seed(seed)
+    # random.seed(951164361)
+    # correct: 852536156,
+    # error: 951164361
+
     startTime = time.process_time()
 
     blueprint.printGrid()
 
-    geneticAlgorithm(blueprint)
+    a = geneticAlgorithm(blueprint)
+    print("Genetic Algorithm")
+    print(str(value(blueprint, a)) + " points")
+    print("Router solution: " + str(a))
+
+    for sol in a:
+        setGridContent(blueprint.grid, "r", sol)
+    blueprint.printGrid()
+
+    v = value(blueprint, [(4, 5), (5, 15)])
+    print("Best one: " + str(v))
 
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
     blueprint.reset()
-
-

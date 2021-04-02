@@ -83,11 +83,14 @@ def buildGraphWithSolution(solution, backboneCoord):
     aux = solution.copy()
     aux.append(backboneCoord)
     for coord in aux:
+        if coord == (-1, -1):
+            continue
         nodes[coord] = Node(coord)
     for i in range(len(aux)):
         for j in range(len(aux)):
-            if i >= j:
+            if i >= j or (aux[i] == (-1, -1) or aux[j] == (-1, -1)):
                 continue
+
             edges.append(Edge(nodes[aux[i]], nodes[aux[j]], utils.distance(aux[i], aux[j])))
 
     return Graph(list(nodes.values()), edges)
