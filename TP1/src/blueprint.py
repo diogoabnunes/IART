@@ -28,7 +28,7 @@ class Blueprint:
             self.backboneCost = Pb
             self.routerCost = Pr
             self.budget = B
-            self.backbonePosition = (bc, br)
+            self.backbonePosition = (br, bc)
             self.msts = {}
             self.mstPaths = {}
             self.cellsCoverage = {}
@@ -158,12 +158,35 @@ class Blueprint:
         path = returnFromAStar
         print("Distance: " + str(len(path)))
 
-        gridToPrint = self.grid.copy()
+        gridToPrint = []
+        for row in self.grid:
+            gridToPrint.append(row.copy())
+
         for coord in path:
             setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
 
         setGridContent(gridToPrint, "S", path[0])
         setGridContent(gridToPrint, "E", path[-1])
+
+        rowsInStr = []
+        for row in gridToPrint:
+            rowsInStr.append(''.join(row))
+        gridStr = '\n'.join(rowsInStr)
+        print(gridStr)
+
+    def printSolution(self, solution):
+        cellsCovered = self.getSolutionCoveredCells(solution)
+        print("Cells covered: " + str(len(cellsCovered)))
+
+        gridToPrint = []
+        for row in self.grid:
+            gridToPrint.append(row.copy())
+
+        for coord in cellsCovered:
+            setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
+
+        for router in solution:
+            setGridContent(gridToPrint, "r", router)
 
         rowsInStr = []
         for row in gridToPrint:
@@ -294,7 +317,7 @@ class Blueprint:
 
 
 if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/example.in")
+    blueprint = Blueprint("../inputs/charleston_road.in")
     startTime = time.process_time()
 
     blueprint.printGrid()

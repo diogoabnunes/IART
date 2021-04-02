@@ -82,7 +82,7 @@ def TabuSearch(blueprint, solution):
     return bestSolution
 
 if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/example.in")
+    blueprint = bp.Blueprint("../inputs/charleston_road.in")
 
     startTime = time.process_time()
 
