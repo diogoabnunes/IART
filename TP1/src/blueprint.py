@@ -123,15 +123,6 @@ class Blueprint:
             return False
         return atGrid != '#'
 
-    def validPositionGenetic(self, x, y=None):
-        """
-        Checks if a position is valid and doesn't have a wall.
-        """
-        atGrid = self.atGrid(x, y)
-        if not atGrid:
-            return False
-        return atGrid != '#'
-
     def reset(self):
         self.paths = {}
         self.cellsCoverage = {}

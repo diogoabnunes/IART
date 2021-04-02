@@ -13,9 +13,9 @@ def distance(pointA, pointB):
 def setGridContent(grid, content, x, y=None):
     try:
         if type(x) == tuple:
-            grid[x] = content
+            grid[x[0]][x[1]] = content
             return
-        grid[(x, y)] = content
+        grid[x][y] = content
         return
     except IndexError:
         return None
@@ -175,3 +175,16 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     return neighbour, neighbourValue
 
 
+def orderRouters(solution):
+    toLast, newSol = [], []
+
+    for router in solution:
+        if router != (-1, -1):
+            newSol.append(router)
+        else:
+            toLast.append(router)
+
+    for router in toLast:
+        newSol.append(router)
+
+    return newSol
