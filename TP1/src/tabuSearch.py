@@ -2,6 +2,7 @@ import time
 import blueprint as bp
 import hillClimbing
 from utils import *
+import utils
 
 def getTabuStructure(blueprint,solution):
     dict = {}
