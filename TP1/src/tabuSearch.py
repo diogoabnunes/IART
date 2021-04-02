@@ -1,4 +1,3 @@
-import random
 import time
 import blueprint as bp
 import hillClimbing
@@ -37,7 +36,7 @@ def TabuSearch(blueprint, solution):
         print('\n\n### iter {}###  Current_Objvalue: {}, Best_Objvalue: {}'.format(iter, currentValue, bestValue))
 
         for i in tabuStructure:
-            candidateSolution, candidateValue = hillClimbing.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
+            candidateSolution, candidateValue = utils.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
             if candidateValue is not None:
                 tabuStructure[i]['MoveValue'] = candidateValue
 
@@ -47,9 +46,9 @@ def TabuSearch(blueprint, solution):
             tabuTime = tabuStructure[bestMove]["tabuTime"]
 
             if tabuTime < iter:
-                currentSolution, currentValue = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
+                currentSolution, currentValue = utils.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
 
-                if moveValue < bestValue:
+                if moveValue > bestValue:
                     bestSolution = currentSolution
                     bestValue = currentValue
                     print("   best_move: {}, Objvalue: {} => Best Improving => Admissible".format(bestMove, currentValue))
@@ -66,7 +65,7 @@ def TabuSearch(blueprint, solution):
 
                 if moveValue > bestValue:
                     # make the move
-                    currentSolution, currentValue = hillClimbing.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
+                    currentSolution, currentValue = utils.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
                     bestSolution = currentSolution
                     bestValue = currentValue
                     print("   best_move: {}, Objvalue: {} => Aspiration => Admissible".format(bestMove, currentValue))
@@ -74,11 +73,12 @@ def TabuSearch(blueprint, solution):
                     iter += 1
                     break
                 else:
-                    tabuStructure[bestMove]["MoveValue"] = float('inf')
+                    tabuStructure[bestMove]["MoveValue"] = float('-inf')
+                    terminate += 1
                     print("   best_move: {}, Objvalue: {} => Tabu => Inadmissible".format(bestMove, currentValue))
-                    continue
+                    break
     # print('#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Objvalue: {}".format(bestSolution, bestValue), sep="\n")
-    return tabuStructure, bestSolution, bestValue
+    return bestSolution
 
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
@@ -86,10 +86,10 @@ if __name__ == "__main__":
     startTime = time.process_time()
 
     while True:
-        solution = hillClimbing.generateMaxRoutersSolution(blueprint)
-        if not hillClimbing.validSolution(blueprint, solution):
+        solution = utils.generateMaxRoutersSolution(blueprint)
+        if not utils.validSolution(blueprint, solution):
             continue
-        if hillClimbing.value(blueprint, solution) is None:
+        if utils.value(blueprint, solution) is None:
             continue
         break
     # v1 = value(blueprint, solution)
@@ -97,9 +97,9 @@ if __name__ == "__main__":
     # print(v1)
     # print(v2)
 
-    print("Before Tabu Search:", solution, ":", hillClimbing.value(blueprint, solution))
+    print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
     s2 = TabuSearch(blueprint, solution)
-    print("After Tabu Search:", s2, ":", hillClimbing.value(blueprint, s2))
+    print("After Tabu Search:", s2, ":", utils.value(blueprint, s2))
 
     endTime = time.process_time()
     print("Time: {endTime - startTime} seconds")
