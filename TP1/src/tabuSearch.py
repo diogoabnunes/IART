@@ -33,7 +33,7 @@ def TabuSearch(blueprint, solution):
 
     iter = 1
     terminate = 0
-    while terminate < 50:
+    while terminate < 10:
         print('\n\n### iter {}###  Current_Objvalue: {}, Best_Objvalue: {}'.format(iter, currentValue, bestValue))
 
         for i in tabuStructure:

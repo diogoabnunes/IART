@@ -46,6 +46,7 @@ class Blueprint:
                 for j in range(self.width):
                     if self.atGrid((i, j)) != "#":
                         self.validPositions.append((i, j))
+                        
 
     def printGrid(self):
         rowsInStr = []
@@ -130,6 +131,15 @@ class Blueprint:
         if not atGrid:
             return False
         return atGrid != '#'
+    
+    def notVoid(self, x, y=None):
+        """
+        Checks if a position is valid and isn't a void.
+        """
+        atGrid = self.atGrid(x, y)
+        if not atGrid:
+            return False
+        return atGrid != '-'
 
     def validPositionGenetic(self, x, y=None):
         """
