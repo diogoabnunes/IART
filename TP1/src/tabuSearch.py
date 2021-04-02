@@ -1,10 +1,15 @@
 import time
 import blueprint as bp
-import hillClimbing
 from utils import *
 import utils
 
 def getTabuStructure(blueprint,solution):
+    """
+    Initializes the tabu data structures
+    :param blueprint:
+    :param solution:
+    :return: Returns a dictionnary with keys being a tuple in the following structure (routerNumber,xOrY,moveUpOrDown,numberOfRouters)
+    """
     dict = {}
     index = 0
     for i in solution:
@@ -23,7 +28,12 @@ def getTabuStructure(blueprint,solution):
     return dict
 
 def tabuSearch(blueprint, solution):
-    # Parameters
+    """
+    Tabu Search algorithm implementation
+    :param blueprint:
+    :param solution:
+    :return: Returns the best found solution
+    """
     tabuTenure = 10
     tabuStructure = getTabuStructure(blueprint, solution)
     bestSolution = solution
