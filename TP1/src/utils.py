@@ -166,4 +166,16 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
 
     return neighbour, neighbourValue
 
+def orderRouters(solution):
+    toLast, newSol = [], []
 
+    for router in solution:
+        if router != (-1, -1):
+            newSol.append(router)
+        else:
+            toLast.append(router)
+
+    for router in toLast:
+        newSol.append(router)
+
+    return newSol
