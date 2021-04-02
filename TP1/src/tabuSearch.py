@@ -78,7 +78,7 @@ def TabuSearch(blueprint, solution):
                     terminate += 1
                     print("   Best Move: {}, Value: {} => Tabu => Inadmissible".format(bestMove, currentValue))
                     break
-    # print('#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Objvalue: {}".format(bestSolution, bestValue), sep="\n")
+    print('\n', '#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Value: {}".format(bestSolution, bestValue), sep="\n")
     return bestSolution
 
 if __name__ == "__main__":
@@ -93,10 +93,6 @@ if __name__ == "__main__":
         if utils.value(blueprint, solution) is None:
             continue
         break
-    # v1 = value(blueprint, solution)
-    # v2 = value(blueprint, solution)
-    # print(v1)
-    # print(v2)
 
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
     s2 = TabuSearch(blueprint, solution)
