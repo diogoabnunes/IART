@@ -71,7 +71,7 @@ if __name__ == "__main__":
     rng = random.Random(seed)
     print("Seed was:", seed)
     random.seed(seed)
-    # random.seed(118831603)
+    # random.seed(72710764)
     blueprint = bp.Blueprint("../inputs/example.in")
 
     startTime = time.process_time()
@@ -90,10 +90,10 @@ if __name__ == "__main__":
 
     print("Before Hill Climbing:", solution, ":", value(blueprint, solution))
     s2 = hillClimbing(blueprint, solution)
-    print("After Hill Climbing:", s2, ":", value(blueprint, s2))
+    print("After Regular Hill Climbing:", s2, ":", value(blueprint, s2))
 
     s3 = hillClimbingSteepestAscend(blueprint, solution)
-    print("After Hill Climbing:", s3, ":", value(blueprint, s3))
+    print("After Steepest Hill Climbing:", s3, ":", value(blueprint, s3))
 
     endTime = time.process_time()
     print(f"Time: {endTime - startTime} seconds")
