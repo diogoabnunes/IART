@@ -33,8 +33,8 @@ def TabuSearch(blueprint, solution):
 
     iter = 1
     terminate = 0
-    while terminate < 10:
-        print('\n\n### iter {}###  Current_Objvalue: {}, Best_Objvalue: {}'.format(iter, currentValue, bestValue))
+    while terminate < 50:
+        print('\n\n### Iteration {} ###  Current Value: {}, Best Value: {}'.format(iter, currentValue, bestValue))
 
         for i in tabuStructure:
             candidateSolution, candidateValue = utils.neighbour(blueprint, currentSolution, i[0], i[1], i[2], i[3])
@@ -52,10 +52,10 @@ def TabuSearch(blueprint, solution):
                 if moveValue > bestValue:
                     bestSolution = currentSolution
                     bestValue = currentValue
-                    print("   best_move: {}, Objvalue: {} => Best Improving => Admissible".format(bestMove, currentValue))
+                    print("   Best Move: {}, Value: {} => Best Improving => Admissible".format(bestMove, currentValue))
                     terminate = 0
                 else:
-                    print("   ##Termination: {}## best_move: {}, Objvalue: {} => Least non-improving => " "Admissible".format(terminate, bestMove, currentValue))
+                    print("   ## Termination: {} ## Best Move: {}, Value: {} => Least non-improving => " "Admissible".format(terminate, bestMove, currentValue))
                     terminate += 1
 
                 tabuStructure[bestMove]['tabuTime'] = iter + tabuTenure
@@ -69,14 +69,14 @@ def TabuSearch(blueprint, solution):
                     currentSolution, currentValue = utils.neighbour(blueprint, currentSolution, bestMove[0], bestMove[1], bestMove[2], bestMove[3])
                     bestSolution = currentSolution
                     bestValue = currentValue
-                    print("   best_move: {}, Objvalue: {} => Aspiration => Admissible".format(bestMove, currentValue))
+                    print("   Best Move: {}, Value: {} => Aspiration => Admissible".format(bestMove, currentValue))
                     terminate = 0
                     iter += 1
                     break
                 else:
                     tabuStructure[bestMove]["MoveValue"] = float('-inf')
                     terminate += 1
-                    print("   best_move: {}, Objvalue: {} => Tabu => Inadmissible".format(bestMove, currentValue))
+                    print("   Best Move: {}, Value: {} => Tabu => Inadmissible".format(bestMove, currentValue))
                     break
     # print('#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Objvalue: {}".format(bestSolution, bestValue), sep="\n")
     return bestSolution
@@ -100,8 +100,9 @@ if __name__ == "__main__":
 
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
     s2 = TabuSearch(blueprint, solution)
-    print("After Tabu Search:", s2, ":", utils.value(blueprint, s2))
+    print("\nAfter Tabu Search:", s2, ":", utils.value(blueprint, s2))
 
     endTime = time.process_time()
-    print("Time: {endTime - startTime} seconds")
+    totalTime = endTime - startTime
+    print("\nTime: {} seconds".format(totalTime))
     blueprint.reset()
