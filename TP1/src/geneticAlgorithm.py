@@ -25,6 +25,7 @@ def mutation(blueprint, sol):  # should be a change in one solution, not a combi
     rand = random.randint(0, r - 1)
 
     routerToMutate = list(sol[rand])
+    print("Mutation",routerToMutate)
     # to do
 
     return sol
@@ -44,6 +45,7 @@ def generateInitialPopulation(blueprint):
     iteration = 0
 
     while True:
+        print("Generating initial population: " + str(iteration) + "/30")
         individualSol = []
         for j in range(maxLength):
             rand = random.randint(0, len(validPositions) - 1)
@@ -68,9 +70,10 @@ def generateInitialPopulation(blueprint):
 def geneticAlgorithm(blueprint):
     population = generateInitialPopulation(blueprint)
     iteration = 0
-    lastIteration = 100
+    lastIteration = 20
 
     while iteration < lastIteration:
+        print("Doing... " + str(iteration) + "/" + str(lastIteration))
         nextGeneration = []
 
         for i in range(int(len(population))):
@@ -78,8 +81,8 @@ def geneticAlgorithm(blueprint):
             y = population[random.randint(0, int(len(population) / 2))]
             child = crossover(x, y)
 
-            # if random.randint(0, 100) < 50:  # to change
-            #     child = mutation(blueprint, child)
+            if random.randint(0, 100) < 50:  # to change
+                child = mutation(blueprint, child)
 
             child = orderRouters(child)
             if value(blueprint, child) is not None and validSolution(blueprint, child):
