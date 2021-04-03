@@ -45,7 +45,7 @@ def hillClimbing(blueprint, solution):
     return solution
 
 
-def hillClimbingSteepestAscend(blueprint, solution):
+def hillClimbingSteepestAscent(blueprint, solution):
     """
     Hill climbing steepest ascent implementation.
     :return: Returns the best found solution
@@ -55,7 +55,6 @@ def hillClimbingSteepestAscend(blueprint, solution):
 
     solutionCoveredCells = len(blueprint.getSolutionCoveredCells(solution))
     solutionRouters = routersPlaced(solution)
-
 
     upgrade = True
     steepest1 = (solution, solutionCoveredCells, solutionRouters)
@@ -147,7 +146,7 @@ if __name__ == "__main__":
     # print(f"Time: {regularEndTime - regularStartTime} seconds\n")
 
     steepestStartTime = time.process_time()
-    s3 = hillClimbingSteepestAscend(blueprint, solution)
+    s3 = hillClimbingSteepestAscent(blueprint, solution)
     steepestEndTime = time.process_time()
 
     blueprint.plotSolution(s3)
