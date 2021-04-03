@@ -51,35 +51,34 @@ def generateInitialPopulation(blueprint):
 
     iteration = 0
     lastIteration = 8
-    solLength = 0
-
 
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
         individualSol = []
-        while solLength < maxLength:
+        for j in range(maxLength):
             rand = random.randint(0, len(validPositions) - 1)
             while validPositions[rand] in individualSol:
                 rand = random.randint(0, len(validPositions) - 1)
 
             individualSol.append(validPositions[rand])
 
-            if len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
+            while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
                 individualSol.pop()
-                continue
-
-            if value(blueprint, individualSol) is None:
-                individualSol.pop()
-                while len(individualSol) < maxLength:
-                    individualSol.append((-1, -1))
-                break
+                rand = random.randint(0, len(validPositions) - 1)
+                while validPositions[rand] in individualSol:
+                    rand = random.randint(0, len(validPositions) - 1)
+                individualSol.append(validPositions[rand])
 
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < maxLength:
                     individualSol.append((-1, -1))
                 break
 
-            solLength += 1
+            if value(blueprint, individualSol) is None:
+                individualSol.pop()
+                while len(individualSol) < maxLength:
+                    individualSol.append((-1, -1))
+                break
 
         individualSol = orderRouters(individualSol)
 
@@ -107,8 +106,6 @@ def geneticAlgorithm(blueprint):
 
     while iteration < lastIteration:
         print("Generation... " + str(iteration) + "/" + str(lastIteration))
-        for sol in population:
-            print(getIndiceOfLastNonEmptyRouter(sol))
         nextGeneration = []
 
         for i in range(int(len(population))):
@@ -116,7 +113,7 @@ def geneticAlgorithm(blueprint):
             y = population[random.randint(0, int(len(population) / 2))]
             child = crossover(x, y)
 
-            if random.randint(0, 100) < 50:  # to change
+            if random.randint(0, 100) < 10:  # to change
                 child = mutation(blueprint, child)
 
             child = orderRouters(child)

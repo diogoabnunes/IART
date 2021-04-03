@@ -79,16 +79,56 @@ def generateMaxRoutersSolution(blueprint):
         solution.append((x, y))
     return solution
 
+def generateSolution(blueprint):
+    individualSol = []
+    while True:
+        for j in range(blueprint.getMaxRouters()):
+            rand = random.randint(0, len(blueprint.validPositions) - 1)
+            while blueprint.validPositions[rand] in individualSol:
+                rand = random.randint(0, len(blueprint.validPositions) - 1)
+
+            individualSol.append(blueprint.validPositions[rand])
+
+            while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
+                individualSol.pop()
+                rand = random.randint(0, len(blueprint.validPositions) - 1)
+                while blueprint.validPositions[rand] in individualSol:
+                    rand = random.randint(0, len(blueprint.validPositions) - 1)
+                individualSol.append(blueprint.validPositions[rand])
+
+            if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
+                while len(individualSol) < blueprint.getMaxRouters():
+                    individualSol.append((-1, -1))
+                break
+
+            if value(blueprint, individualSol) is None:
+                individualSol.pop()
+                while len(individualSol) < blueprint.getMaxRouters():
+                    individualSol.append((-1, -1))
+                break
+
+        individualSol = orderRouters(individualSol)
+        if value(blueprint, individualSol) is None:
+            continue
+        return individualSol
+
+
 def getIndiceOfLastNonEmptyRouter(solution) -> int:
     for i in range(0, len(solution)):
         if solution[-(i + 1)] != (-1, -1):
             return len(solution) - i - 1
 
 
-def randomNeighbour(blueprint, solution: list):  # can return an infeasable solution
+def randomNeighbour(blueprint, solution: list, remove=False):  # can return an infeasible solution
+    """
+    Given a solution, returns a random neighbour and the respective value.
+    """
     routersNum = routersPlaced(solution)
 
-    routerChange = random.randint(0, routersNum - 1)
+    if remove:
+        routerChange = random.randint(0, getIndiceOfLastNonEmptyRouter(solution))
+    else:
+        routerChange = random.randint(0, routersNum - 1)
     coordChange = random.randint(0, 1)
     upOrDown = random.randint(0, 1)
 
@@ -100,7 +140,7 @@ def randomNeighbour(blueprint, solution: list):  # can return an infeasable solu
     elif upOrDown == 0:
         add = -1
 
-    if upOrDown == -1:
+    if remove:
         neighbour[routerChange] = (-1, -1)
     else:
         if coordChange == 0:
@@ -180,8 +220,9 @@ def orderRouters(solution):
 
     return newSol
 
-def printSolToFile(solution, filename = None):
+def printSolToFile(solution, time, filename):
     with open(filename, "w") as file:
+        file.write("Execution time: " + str(time) + "s")
         for router in solution:
             file.write(str(router) + "\n")
 

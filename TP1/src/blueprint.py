@@ -317,6 +317,8 @@ class Blueprint:
             gridAux.append(rowAux)
 
         for router in solution:
+            if router == (-1,-1):
+                continue
             coveredCells = self.accessCoverageDict(router)
             for cell in coveredCells:
                 setGridContent(gridAux, (13, 152, 186), cell)
@@ -329,6 +331,8 @@ class Blueprint:
                 setGridContent(gridAux, (253,235,79), cell)
 
         for router in solution:
+            if router == (-1,-1):
+                continue
             setGridContent(gridAux, (147, 218, 115), router)
 
         setGridContent(gridAux, (0, 230, 0), self.backbonePosition)

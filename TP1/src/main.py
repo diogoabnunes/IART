@@ -18,7 +18,7 @@ def menu():
         print("[1] example.in (8x22)")
         print("[2] labirinto.in (3x7)")
         print("[3] enunciado.in (7x16)")
-        print("[4] better_example.in (8x22)")
+        print("[4] another_example.in (8x22)")
         print("[5] charleston_road.in (240x180)")
         print("[6] rue_de_londres.in (559x404)")
         print("[7] opera.in (667x540)")
@@ -33,7 +33,7 @@ def menu():
         elif file == str(3):
             file = "../inputs/enunciado.in"
         elif file == str(4):
-            file = "../inputs/better_example.in"
+            file = "../inputs/another_example.in"
         elif file == str(5):
             file = "../inputs/charleston_road.in"
         elif file == str(6):
@@ -47,7 +47,6 @@ def menu():
         else:
             print("File not found\n")
             continue
-        print("File input: " + file + "\n")
 
         blueprint = bp.Blueprint(file)
 
@@ -60,14 +59,9 @@ def menu():
         print("[0] Quit")
         val = input("Option: ")
 
-        while True:
-            solution = utils.generateMaxRoutersSolution(blueprint)
-            if not utils.validSolution(blueprint, solution):
-                continue
-            if utils.value(blueprint, solution) is None:
-                continue
-            break
-
+        print("Generating inital solution...")
+        solution = utils.generateSolution(blueprint)
+        print("Generated inital solution.")
         algorithmName = ""
 
         startTime = time.time()
@@ -102,7 +96,7 @@ def menu():
         blueprint.printSolutionPaths(solution)
         print(f"\nTime: {endTime - startTime} seconds\n")
         blueprint.plotSolution(solution, "../out/" + outFileName + ".png")
-        utils.printSolToFile(solution, "../out/" + outFileName + ".txt")
+        utils.printSolToFile(solution, endTime - startTime, "../out/" + outFileName + ".txt")
 
         print("\nWhat do you wish to do?")
         print("[1] Start Over")
