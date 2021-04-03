@@ -53,7 +53,7 @@ def menu():
         print("Choose algorithm to run")
         print("[1] Simulated Annealing")
         print("[2] Hill Climbing: Regular")
-        print("[3] Hill Climbing: Steepest Ascend")
+        print("[3] Hill Climbing: Steepest Ascent")
         print("[4] Genetic Algorithm")
         print("[5] Tabu Search")
         print("[0] Quit")

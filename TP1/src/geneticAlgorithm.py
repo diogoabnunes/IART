@@ -29,7 +29,6 @@ def mutation(blueprint, sol):
     Makes a Mutation in a solution of routers positions.
     :return: Solution with a mutation.
     """
-    print("Mutation!")
     r = routersPlaced(sol)
     routersToRemove = max(1, blueprint.getMaxRouters() // 10)
     for i in range(routersToRemove):
