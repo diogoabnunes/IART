@@ -122,16 +122,16 @@ def generateSolution(blueprint):
     :param blueprint:
     :return: Returns the created solution
     """
-    # 'individualSol'
+
     individualSol = []
     positionsAdded = {}
     while True:
-        for j in range(blueprint.getMaxRouters()):
+        for j in range(blueprint.getMaxRouters()):  # iterate the total number of available routers
             rand = random.randint(0, len(blueprint.validPositions) - 1)
 
             while True:
                 try:
-                    positionsAdded[rand]
+                    positionsAdded[rand]  # does not add duplicate coords
                 except KeyError:
                     break
                 rand = random.randint(0, len(blueprint.validPositions) - 1)
@@ -140,15 +140,15 @@ def generateSolution(blueprint):
             individualSol.append(blueprint.validPositions[rand])
             positionsAdded[rand] = True
 
-            if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
-                while len(individualSol) < blueprint.getMaxRouters():
-                    individualSol.append((-1, -1))
+            if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):  # if all target cells are covered
+                while len(individualSol) < blueprint.getMaxRouters():  # until solution has the correct size
+                    individualSol.append((-1, -1))  # add non present routers
                 break
 
-            if value(blueprint, individualSol) is None:
-                individualSol.pop()
-                while len(individualSol) < blueprint.getMaxRouters():
-                    individualSol.append((-1, -1))
+            if value(blueprint, individualSol) is None:  # if the new solution exceeds the budget
+                individualSol.pop()  # removes the last router
+                while len(individualSol) < blueprint.getMaxRouters():  # until solution it has the correct size
+                    individualSol.append((-1, -1))  # add non present routers
                 break
 
         return individualSol
@@ -170,7 +170,7 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
 
     routerChange = random.randint(0, getIndexOfLastNonEmptyRouter(solution))
 
-    while True:
+    while True:  # generate random router coords
         upOrDownX = random.randint(-1, 1)
         upOrDownY = random.randint(-1, 1)
         if upOrDownX == 0 and upOrDownY == 0:
@@ -179,17 +179,17 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
 
     neighbour = solution.copy()
 
-    if remove:
+    if remove:  # by default = false
         lastIx = getIndexOfLastNonEmptyRouter(neighbour)
         neighbour[routerChange] = neighbour[lastIx]
         neighbour[lastIx] = (-1, -1)
     else:
-        neighbour[routerChange] = (neighbour[routerChange][0] + upOrDownX, neighbour[routerChange][1] + upOrDownY)
+        neighbour[routerChange] = (neighbour[routerChange][0] + upOrDownX, neighbour[routerChange][1] + upOrDownY)  # create the new solution wiht the randomly generated coords
 
-    if not validSolution(blueprint, neighbour):
+    if not validSolution(blueprint, neighbour):  # if solution is not correct
         return None, None
     neighbourValue = value(blueprint, neighbour)
-    if neighbourValue is None:
+    if neighbourValue is None:  # if solution exceeds the budget
         return None, None
     return neighbour, neighbourValue
 
@@ -206,12 +206,12 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     :return: The pretended neighbour and his value.
     """
     
-    if solution is None:
+    if solution is None:  # if an invalid solution is passed, an invalid solution is returned
         return None, None
     
-    neighbour = solution.copy()
+    neighbour = solution.copy()  # start by copying the passed solution
 
-    if numRouters - 1 < routerToChange:
+    if numRouters - 1 < routerToChange:  # if the router the user wants to change does not exist, error
         raise RuntimeError("numRouters < routerToChange")
 
     add = 0
@@ -220,20 +220,21 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     elif upOrDown == 0:
         add = -1
 
-    if upOrDown == -1:
+    if upOrDown == -1:  # the user wants the router to be removed
         lastIx = getIndexOfLastNonEmptyRouter(neighbour)
-        neighbour[routerToChange] = neighbour[lastIx]
+        neighbour[routerToChange] = neighbour[lastIx]  # all removed routers are placed in the end
         neighbour[lastIx] = (-1, -1)
-    else:
-        if coordToChange == 0:
+    else:  # the user wants to move the router
+        if coordToChange == 0:  # change the x coord
             neighbour[routerToChange] = (neighbour[routerToChange][0] + add, neighbour[routerToChange][1])
-        elif coordToChange == 1:
+        elif coordToChange == 1:  # change the y coord
             neighbour[routerToChange] = (neighbour[routerToChange][0], neighbour[routerToChange][1] + add)
 
-    if not validSolution(blueprint, neighbour):
+    if not validSolution(blueprint, neighbour):  # if the new solution is not valid
         return None, None
 
     routersToRemove = routersPlaced(solution) - numRouters
+
     if routersToRemove >= 0:
         lastIx = getIndexOfLastNonEmptyRouter(neighbour)
         for i in range(routersToRemove):
@@ -243,9 +244,9 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
             lastIx -= 1
             if lastIx == -1:
                 break
-    if calcValue:
+    if calcValue:  # by default = true
         neighbourValue = value(blueprint, neighbour)
-        if neighbourValue is None:
+        if neighbourValue is None:  # verify if the new solution (neighbour) is within the budget
             return None, None
         return neighbour, neighbourValue
     else:
@@ -258,12 +259,12 @@ def orderRouters(solution):
     toLast, newSol = [], []
 
     for router in solution:
-        if router != (-1, -1):
+        if router != (-1, -1):  # the router is present
             newSol.append(router)
-        else:
+        else:  # the router is removed
             toLast.append(router)
 
-    for router in toLast:
+    for router in toLast:  # all the removed routers will now be appended to the end of the returned list
         newSol.append(router)
 
     return newSol
