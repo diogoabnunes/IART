@@ -9,9 +9,10 @@ B: Budget
 br: Row of initial cell that is already connected to the backbone
 bc: Column of initial cell that is already connected to the backbone
 """
-import time
 from utils import *
 import kruskal
+import matplotlib
+import matplotlib.pyplot as plt
 
 class Blueprint:
     def __init__(self, filename):
@@ -140,7 +141,7 @@ class Blueprint:
         self.msts = {}
         self.cellsCoverage = {}
 
-    def printSolutionPaths(self, solution, file = None):
+    def printSolutionPaths(self, solution, filename = None):
         path = self.accessMstPathsDict(solution)
         print("Distance: " + str(len(path)))
 
@@ -160,9 +161,13 @@ class Blueprint:
         for row in gridToPrint:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
-        print(gridStr)
+        if filename is None:
+            print(gridStr)
+        else:
+            with open(filename, "w") as file:
+                file.write(gridStr)
 
-    def printSolutionCoverage(self, solution, file = None):
+    def printSolutionCoverage(self, solution, filename = None):
         cellsCovered = self.getSolutionCoveredCells(solution)
         print("Cells covered: " + str(len(cellsCovered)))
 
@@ -180,7 +185,11 @@ class Blueprint:
         for row in gridToPrint:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
-        print(gridStr)
+        if filename is None:
+            print(gridStr)
+        else:
+            with open(filename, "w") as file:
+                file.write(gridStr)
 
     def getMaxRouters(self) -> int:
         return int(self.budget / self.routerCost)
@@ -291,8 +300,56 @@ class Blueprint:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
+
+    def plotSolution(self, solution, fpath=None):      # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
+        # plot graph with coverage
+        fig = plt.figure()
+
+        ax = plt.Axes(fig, (0, 0, 1, 1))
+        ax.set_axis_off()
+        fig.add_axes(ax)
+
+        gridAux = []
+        for row in self.grid:
+            rowAux = []
+            for element in row:
+                if element == '-':
+                    rowAux.append((54, 0, 67))
+                if element == '.':
+                    rowAux.append((100, 139, 139))
+                if element == '#':
+                    rowAux.append((51, 53, 108))
+            gridAux.append(rowAux)
+
+        for router in solution:
+            coveredCells = self.accessCoverageDict(router)
+            for cell in coveredCells:
+                setGridContent(gridAux, (13, 152, 186), cell)
+
+        paths = self.accessMstPathsDict(solution)
+        for cell in paths:
+            if gridAux[cell[0]][cell[1]] == (51, 53, 108):
+                setGridContent(gridAux, (202, 184, 28), cell)
+            else:
+                setGridContent(gridAux, (253,235,79), cell)
+
+        for router in solution:
+            setGridContent(gridAux, (147, 218, 115), router)
+
+        setGridContent(gridAux, (0, 230, 0), self.backbonePosition)
+
+        ax.imshow(gridAux)
+
+        plt.savefig(fpath)
+
+        plt.show()
+
+
 # Blueprint end
 
 if __name__ == "__main__":
     blueprint = Blueprint("../inputs/lets_go_higher.in")
     blueprint.printGrid()
+
+
+

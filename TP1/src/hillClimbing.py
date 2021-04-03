@@ -39,6 +39,11 @@ def hillClimbingSteepestAscend(blueprint, solution):
 
     upgrade = True
     steepest = (solution, solutionValue)
+# [(1,1), (2,2), (3,3)]
+    # [(2,1), (2,2), (3,3)]
+    # [(2,1), (2,2)]
+    # [(2,1)]
+    # []
 
     while upgrade:
         upgrade = False
@@ -82,11 +87,16 @@ if __name__ == "__main__":
     s2 = hillClimbing(blueprint, solution)
     regularEndTime = time.process_time()
     print("After Regular Hill Climbing:", s2, ":", value(blueprint, s2))
+    blueprint.plotSolution(s2)
+    # blueprint.printSolutionPaths(s2, "../out/paths.bash")
+    # blueprint.printSolutionCoverage(s2, "../out/coverage.sh")
     print(f"Time: {regularEndTime - regularStartTime} seconds\n")
 
     steepestStartTime = time.process_time()
     s3 = hillClimbingSteepestAscend(blueprint, solution)
     steepestEndTime = time.process_time()
     print("After Steepest Hill Climbing:", s3, ":", value(blueprint, s3))
+    blueprint.printSolutionPaths(s2, "../out/pathsSteepest.sh")
+    blueprint.printSolutionCoverage(s2, "../out/coverageSteepest.sh")
     print(f"Time: {steepestEndTime - steepestStartTime} seconds")
     blueprint.reset()
