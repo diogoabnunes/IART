@@ -125,9 +125,11 @@ def geneticAlgorithm(blueprint):
         iteration += 1
 
     print("Generation... Done!")
+    print("Solution value: " + str(value(blueprint, population[0])))
     return population[0]
 
 
+# TO CLEAN THIS
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/charleston_road.in")
 

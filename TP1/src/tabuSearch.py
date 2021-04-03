@@ -1,8 +1,8 @@
 import time
 import blueprint as bp
-import hillClimbing
 from utils import *
 import utils
+
 
 def getTabuStructure(blueprint,solution):
     dict = {}
@@ -21,6 +21,7 @@ def getTabuStructure(blueprint,solution):
         index = index + 1
 
     return dict
+
 
 def tabuSearch(blueprint, solution):
     # Parameters
@@ -42,7 +43,7 @@ def tabuSearch(blueprint, solution):
                 tabuStructure[i]['MoveValue'] = candidateValue
 
         while True:
-            bestMove = max(tabuStructure, key =lambda x: tabuStructure[x]['MoveValue'])
+            bestMove = max(tabuStructure, key=lambda x: tabuStructure[x]['MoveValue'])
             moveValue = tabuStructure[bestMove]["MoveValue"]
             tabuTime = tabuStructure[bestMove]["tabuTime"]
 
@@ -55,7 +56,8 @@ def tabuSearch(blueprint, solution):
                     print("   Best Move: {}, Value: {} => Best Improving => Admissible".format(bestMove, currentValue))
                     terminate = 0
                 else:
-                    print("   ## Termination: {} ## Best Move: {}, Value: {} => Least non-improving => " "Admissible".format(terminate, bestMove, currentValue))
+                    print("   ## Termination: {} ## Best Move: {}, Value: {} => Least non-improving => " "Admissible".
+                          format(terminate, bestMove, currentValue))
                     terminate += 1
 
                 tabuStructure[bestMove]['tabuTime'] = iter + tabuTenure
@@ -78,8 +80,10 @@ def tabuSearch(blueprint, solution):
                     terminate += 1
                     print("   Best Move: {}, Value: {} => Tabu => Inadmissible".format(bestMove, currentValue))
                     break
-    print('\n', '#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Value: {}".format(bestSolution, bestValue), sep="\n")
+    print('\n', '#' * 50, "Performed iterations: {}".format(iter), "Best found Solution: {} , Value: {}".
+          format(bestSolution, bestValue), sep="\n")
     return bestSolution
+
 
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")

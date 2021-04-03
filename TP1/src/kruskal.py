@@ -22,6 +22,7 @@ class Node:
             current = current.kruskalParent
         return previous
 
+
 class Edge:
     def __init__(self, nodeFrom : Node, nodeTo : Node, cost):
         self.nodeFrom = nodeFrom
@@ -30,6 +31,7 @@ class Edge:
 
     def __lt__(self, other):
         return self.cost < other.cost
+
 
 class Graph:
     def __init__(self, nodes, edges):
@@ -66,6 +68,7 @@ class Graph:
             backboneCells.extend(path)
         return backboneCells
 
+
 def chooseRoot(node1 : Node, node2 : Node):
     node1 = node1.retrieveRoot()
     node2 = node2.retrieveRoot()
@@ -76,6 +79,7 @@ def chooseRoot(node1 : Node, node2 : Node):
     else:
         node2.kruskalParent = node1
         node1.kruskalRank += 1
+
 
 def buildGraphWithSolution(solution, backboneCoord):
     nodes = {}

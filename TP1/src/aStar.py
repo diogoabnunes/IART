@@ -4,7 +4,7 @@ import math
 
 
 class Node:
-    def __init__(self, pos, parent, h = 0, cost = 0):
+    def __init__(self, pos, parent, h=0, cost=0):
         self.position = pos
         self.parent = parent
         self.cost = cost
@@ -17,7 +17,7 @@ class Node:
     # Sort nodes
     def __lt__(self, other):
         processedCost = 0.8
-        return (processedCost*self.cost + self.heurisitic) < (processedCost*other.cost + other.heurisitic)
+        return (processedCost * self.cost + self.heurisitic) < (processedCost * other.cost + other.heurisitic)
 
     def __repr__(self):
         return '({0},{1})'.format(self.position, self.cost + self.heurisitic)
@@ -72,7 +72,7 @@ def aStar(blueprint, startCoord, endCoord):
 
 
 def isDiagonal(pos1, pos2):
-    ydiff = abs(pos1[0] - pos2[0])
-    xdiff = abs(pos1[1] - pos2[1])
-
-    return xdiff != 0 and ydiff != 0
+    """
+    Checks if 2 positions are in the same diagonal.
+    """
+    return abs(pos1[1] - pos2[1]) != 0 and abs(pos1[0] - pos2[0]) != 0
