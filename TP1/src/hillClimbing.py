@@ -82,9 +82,9 @@ if __name__ == "__main__":
     # random.seed(72710764)
     blueprint = bp.Blueprint("../inputs/example.in")
 
-    print("Generating inital solution...")
+    print("Generating initial solution...")
     solution = generateSolution(blueprint)
-    print("Generated inital solution.")
+    print("Generated initial solution.")
     regularStartTime = time.process_time()
     s2 = hillClimbing(blueprint, solution)
     regularEndTime = time.process_time()
