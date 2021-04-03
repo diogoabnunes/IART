@@ -220,7 +220,10 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     :param numRouters: if it's lower than the number of routers in the solution, removes the worst router
     :return: The pretended neighbour and his value.
     """
-
+    
+    if solution is None:
+        return None, None
+    
     neighbour = solution.copy()
 
     if numRouters - 1 < routerToChange:
