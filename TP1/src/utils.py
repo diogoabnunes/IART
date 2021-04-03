@@ -56,9 +56,10 @@ def printGrid(grid):
 #######################################################################################################################
 
 
-def value(blueprint, solution):  # also checks if solution is valid
+def value(blueprint, solution):
     """
     Calculates and returns the value of a solution.
+    :return: Value of a solution. If the value exceeds the budget, returns None
     """
     t = len(blueprint.getSolutionCoveredCells(solution))  # t = number of cells covered by wireless connection
     N = len(blueprint.accessMstPathsDict(solution))  # N = Number of cells connected to the backbone
@@ -69,10 +70,10 @@ def value(blueprint, solution):  # also checks if solution is valid
     return 1000 * t + remainingBudget
 
 
-def remainingBudget(blueprint, solution):  # also checks if solution is valid
+def remainingBudget(blueprint, solution):
     """
-   Calculates and returns the value of a solution.
-   """
+    Calculates and returns the remaining budget of a solution.
+    """
     t = len(blueprint.getSolutionCoveredCells(solution))  # t = Number of cells covered by wireless connection
     N = len(blueprint.accessMstPathsDict(solution))  # N = Number of cells connected to the backbone
     M = routersPlaced(solution)  # M = Number of routers
@@ -81,9 +82,9 @@ def remainingBudget(blueprint, solution):  # also checks if solution is valid
 
 def routersPlaced(solution) -> int:
     """
-   Calculates the number of routers placed in a solution ((-1, -1) could be in a solution,
-   symbolizing that the budget could have more routers, but these solution uses less routers).
-   """
+    Calculates the number of routers placed in a solution ((-1, -1) could be in a solution,
+    symbolizing that the budget could have more routers, but these solution uses less routers).
+    """
     counter = 0
     for router in solution:
         if router != (-1, -1):  # if the router is used
@@ -114,22 +115,6 @@ def validSolution(blueprint, solution):  # doesn't check budget
     return True
 
 
-def generateMaxRoutersSolution(blueprint):
-    """
-    Generates a solution using the maximum number of routers.
-    """
-    solution = []
-    auxList = [0] * blueprint.getMaxRouters()  # Creation of an auxiliary list with the size being the max number of available routers
-    for i in auxList:
-        x = random.randint(0, blueprint.height - 1)
-        y = random.randint(0, blueprint.width - 1)  # Generate a random router
-        if not blueprint.validPosition(x, y) or not blueprint.notVoid(x, y):  # Check if the created router is in a valid position and in a void cell
-            auxList.append(i)
-            continue
-        solution.append((x, y))  # Add the created router to the solution
-    return solution
-
-
 def generateSolution(blueprint):
     """
     Generates a solution using the maximum number of routers,
@@ -137,7 +122,7 @@ def generateSolution(blueprint):
     :param blueprint:
     :return: Returns the created solution
     """
-
+    # 'individualSol'
     individualSol = []
     positionsAdded = {}
     while True:
@@ -211,6 +196,7 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
 
 def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters, calcValue = True):
     """
+    Generates a neighbour to the current solution, according to the instructions given
     :param blueprint: Problem blueprint.
     :param solution: Initial solution.
     :param routerToChange: index, between 0 and number of router in the solution
