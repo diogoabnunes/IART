@@ -9,7 +9,7 @@ def hillClimbing(blueprint, solution):
     print("\nStarting solution value:", solutionValue)
     iteration = 0
     upgrade = True
-    while iteration < 50 and upgrade:
+    while iteration < 30 and upgrade:
         upgrade = False
         # for numRouters in range(maxRouters, maxRouters//2, -1):
         #     for i in range(numRouters):

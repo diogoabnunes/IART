@@ -1,6 +1,6 @@
-Solution value: 53007
+Solution value: 54007
 Remaining budget: 7
-Execution time: 0.0010068416595458984s
+Execution time: 0.027008056640625s
 
-(4, 6)
-(4, 16)
+(5, 16)
+(4, 5)
