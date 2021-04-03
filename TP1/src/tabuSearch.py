@@ -88,13 +88,9 @@ def tabuSearch(blueprint, solution):
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
 
-    while True:
-        solution = utils.generateMaxRoutersSolution(blueprint)
-        if not utils.validSolution(blueprint, solution):
-            continue
-        if utils.value(blueprint, solution) is None:
-            continue
-        break
+
+    solution = utils.generateSolution(blueprint)
+
 
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
 
