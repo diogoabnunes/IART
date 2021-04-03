@@ -35,6 +35,7 @@ class Blueprint:
             self.grid = []
             self.gridVisited = []
             self.validPositions = []
+            self.targetCoveredCells = 0
 
             for i in range(H):
                 row = []
@@ -46,6 +47,8 @@ class Blueprint:
                 for j in range(self.width):
                     if self.atGrid((i, j)) != "#":
                         self.validPositions.append((i, j))
+                    elif self.atGrid((i, j)) == ".":
+                        self.targetCoveredCells += 1
                         
 
     def getCellNeighbours(self, coord):

@@ -47,31 +47,49 @@ def generateInitialPopulation(blueprint):
 
     maxLength = blueprint.getMaxRouters()
     validPositions = blueprint.validPositions
-    validPositions.append((-1, -1))
+    # validPositions.append((-1, -1))
 
     iteration = 0
+    lastIteration = 8
+    solLength = 0
 
-    while True:
-        print("Generating initial population: " + str(iteration) + "/30")
+
+    while iteration < lastIteration:
+        print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
         individualSol = []
-        for j in range(maxLength):
+        while solLength < maxLength:
             rand = random.randint(0, len(validPositions) - 1)
             while validPositions[rand] in individualSol:
                 rand = random.randint(0, len(validPositions) - 1)
+
             individualSol.append(validPositions[rand])
 
-            individualSol = orderRouters(individualSol)
+            if len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
+                individualSol.pop()
+                continue
 
-        if value(blueprint, individualSol) is not None and validSolution(blueprint, individualSol):
-            iteration += 1
-            population.append(individualSol)
+            if value(blueprint, individualSol) is None:
+                individualSol.pop()
+                while len(individualSol) < maxLength:
+                    individualSol.append((-1, -1))
+                break
 
-        if iteration == 30:
-            print("Generating initial population: Done")
-            break
+            if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
+                while len(individualSol) < maxLength:
+                    individualSol.append((-1, -1))
+                break
+
+            solLength += 1
+
+        individualSol = orderRouters(individualSol)
+
+        if value(blueprint, individualSol) is not None:
+                iteration += 1
+                population.append(individualSol)
 
     population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
 
+    print("Generating initial population: Done!")
     return population
 
 
@@ -85,7 +103,9 @@ def geneticAlgorithm(blueprint):
     lastIteration = 20
 
     while iteration < lastIteration:
-        print("Generation... " + str(iteration) + "/20")
+        print("Generation... " + str(iteration) + "/" + str(lastIteration))
+        for sol in population:
+            print(getIndiceOfLastNonEmptyRouter(sol))
         nextGeneration = []
 
         for i in range(int(len(population))):
@@ -97,7 +117,7 @@ def geneticAlgorithm(blueprint):
                 child = mutation(blueprint, child)
 
             child = orderRouters(child)
-            if value(blueprint, child) is not None and validSolution(blueprint, child):
+            if value(blueprint, child) is not None:
                 nextGeneration.append(child)
 
         population = nextGeneration
@@ -105,17 +125,16 @@ def geneticAlgorithm(blueprint):
         iteration += 1
 
     print("Generation... Done!")
-
-    return max(population, key=lambda elem: value(blueprint, elem))
+    return population[0]
 
 
 if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/example.in")
+    blueprint = bp.Blueprint("../inputs/charleston_road.in")
 
-    seed = random.randrange(999999999)
-    rng = random.Random(seed)
-    print("Seed was:", seed)
-    random.seed(seed)
+    # seed = random.randrange(999999999)
+    # rng = random.Random(seed)
+    # print("Seed was:", seed)
+    random.seed(1)
 
     startTime = time.process_time()
     solution = geneticAlgorithm(blueprint)
