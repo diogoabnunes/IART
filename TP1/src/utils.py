@@ -161,7 +161,6 @@ def generateSolution(blueprint):
             #         continue
             #     individualSol.append(blueprint.validPositions[rand])
 
-
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < blueprint.getMaxRouters():
                     individualSol.append((-1, -1))

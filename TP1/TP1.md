@@ -11,6 +11,7 @@ IART | TP1 | Group 44
 
 ## How to run
 - In a Python IDE
+    - If you are using VS Code or Spyder, change file paths in main.py: where it's "../", change to "./"
     - Run main.py
 - In the command line, in the src directory (as administrator):
     - ```python3.9 main.py```
