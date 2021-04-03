@@ -50,7 +50,7 @@ def generateInitialPopulation(blueprint):
 
     maxLength = blueprint.getMaxRouters()
     validPositions = blueprint.validPositions
-    # validPositions.append((-1, -1))
+
 
     iteration = 0
     lastIteration = 8
@@ -82,8 +82,6 @@ def generateInitialPopulation(blueprint):
                 while len(individualSol) < maxLength:
                     individualSol.append((-1, -1))
                 break
-
-        individualSol = orderRouters(individualSol)
 
         if value(blueprint, individualSol) is not None:
                 iteration += 1

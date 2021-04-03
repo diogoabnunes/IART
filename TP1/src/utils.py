@@ -95,8 +95,9 @@ def checkSolutionDuplicates(solution):
    Checks if a solution has 2 or more routers in a solution (duplicates).
    """
     aux = []
-    for i in solution:
-        aux.append(tuple(i))
+    for router in solution:
+        if router != (-1, -1):
+            aux.append(router)
     return len(aux) != len(set(aux))
 
 
@@ -137,6 +138,7 @@ def generateSolution(blueprint):
     while True:
         for j in range(blueprint.getMaxRouters()):
             rand = random.randint(0, len(blueprint.validPositions) - 1)
+
             while True:
                 try:
                     positionsAdded[rand]
@@ -147,7 +149,7 @@ def generateSolution(blueprint):
 
             individualSol.append(blueprint.validPositions[rand])
             positionsAdded[rand] = True
-            # while len(blueprint.accessCoverageDict(individualSol[-1])) <= 3:
+            # while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
             #     individualSol.pop()
             #     rand = random.randint(0, len(blueprint.validPositions) - 1)
             #     while True:
@@ -158,6 +160,7 @@ def generateSolution(blueprint):
             #         rand = random.randint(0, len(blueprint.validPositions) - 1)
             #         continue
             #     individualSol.append(blueprint.validPositions[rand])
+
 
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < blueprint.getMaxRouters():
@@ -170,7 +173,6 @@ def generateSolution(blueprint):
                     individualSol.append((-1, -1))
                 break
 
-        individualSol = orderRouters(individualSol)
         if value(blueprint, individualSol) is None:
             continue
         return individualSol
@@ -232,6 +234,7 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     """
     
     if solution is None:
+        # print("solution passed to neighbour is None")
         return None, None
     
     neighbour = solution.copy()
@@ -246,20 +249,25 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
         add = -quantity
 
     if upOrDown == -1:
+        # print("removed router by upOrDown")
         lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
         neighbour[routerToChange] = neighbour[lastIx]
         neighbour[lastIx] = (-1, -1)
     else:
         if coordToChange == 0:
             neighbour[routerToChange] = (neighbour[routerToChange][0] + add, neighbour[routerToChange][1])
+            # print("added quantity to x")
         elif coordToChange == 1:
             neighbour[routerToChange] = (neighbour[routerToChange][0], neighbour[routerToChange][1] + add)
+            # print("added quantity to y")
 
     if not validSolution(blueprint, neighbour):
+        # print("neighbour is not valid")
         return None, None
 
     routersToRemove = routersPlaced(solution) - numRouters
     if routersToRemove >= 0:
+        # print("start removing routers")
         # auxSol = neighbour.copy()
         # for i in range(len(auxSol)):
         #     auxSol[i] = (len(blueprint.accessCoverageDict(auxSol[i])), tuple(auxSol[i]), i)
@@ -272,18 +280,18 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
         #     neighbour[indexToChange] = (-1, -1)
         lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
         for i in range(routersToRemove):
-            print("gere")
             toRemove = random.randint(0, lastIx - 1)
             neighbour[toRemove] = neighbour[lastIx]
             neighbour[lastIx] = (-1, -1)
+            # print("removed router, by numRouters")
             lastIx -= 1
             if lastIx == -1:
                 break
 
     neighbourValue = value(blueprint, neighbour)
     if neighbourValue is None:
+        # print("neighbour exceeds budget")
         return None, None
-
     return neighbour, neighbourValue
 
 

@@ -46,7 +46,7 @@ class Blueprint:
 
             for i in range(self.height):
                 for j in range(self.width):
-                    if self.atGrid((i, j)) == "." or self.atGrid((i, j)) == "-":
+                    if self.atGrid((i, j)) == ".":
                         self.validPositions.append((i, j))
                         self.targetCoveredCells += 1
 

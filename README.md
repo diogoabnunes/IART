@@ -14,3 +14,6 @@
     - kruskal.py
     - simulatedAnnealing.py
     
+  
+- bug in genetic
+- bug in neighbour ???
