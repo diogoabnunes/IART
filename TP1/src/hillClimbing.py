@@ -2,6 +2,7 @@ import time
 import blueprint as bp
 from utils import *
 
+
 def hillClimbing(blueprint, solution):
     maxRouters = getIndiceOfLastNonEmptyRouter(solution) + 1
     solutionValue = value(blueprint, solution)
@@ -36,6 +37,7 @@ def hillClimbing(blueprint, solution):
     print("Final solution value:", solutionValue)
     return solution
 
+
 def hillClimbingSteepestAscend(blueprint, solution):
     solutionValue = value(blueprint, solution)
     print("\nStarting solution value:", solutionValue)
@@ -65,6 +67,8 @@ def hillClimbingSteepestAscend(blueprint, solution):
     print("Final solution value:", solutionValue)
     return solution
 
+
+# TO CLEAN THIS
 if __name__ == "__main__":
     seed = random.randrange(999999999)
     rng = random.Random(seed)
@@ -72,8 +76,6 @@ if __name__ == "__main__":
     random.seed(seed)
     # random.seed(72710764)
     blueprint = bp.Blueprint("../inputs/example.in")
-
-
 
     print("Generating inital solution...")
     solution = generateSolution(blueprint)

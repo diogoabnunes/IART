@@ -8,4 +8,11 @@
 - Fix Tabu and Hill Climbing (Generate solution)
 - Enhance Efficiency
 - Slides
-- Code comments
+- Node class in a separated file?
+- Code comments:
+    - blueprint.py
+    - hillClimbing.py
+    - kruskal.py
+    - simulatedAnnealing.py
+    - tabuSearch.py
+    

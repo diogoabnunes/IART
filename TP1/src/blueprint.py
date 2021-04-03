@@ -234,9 +234,9 @@ class Blueprint:
         """
         Gets the router's network coverage for all cells
         """
-        for x in range(blueprint.width):
-            for y in range(blueprint.height):
-                cellsCovered = blueprint.getCellCoverage((x, y))
+        for x in range(self.width):
+            for y in range(self.height):
+                cellsCovered = self.getCellCoverage((x, y))
                 self.cellsCoverage[(x, y)] = cellsCovered
 
     # def getSolutionPathsDistPrediction(self, solution):
@@ -297,7 +297,18 @@ class Blueprint:
         print(gridStr)
 
     def plotSolution(self, solution, fpath=None):      # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
-        # plot graph with coverage
+        """
+        Coverage plot.
+        """
+        purple = (54, 0, 67)
+        darkBlue = (51, 53, 108)
+        softBlue = (13, 152, 186)
+        yellow = (253, 235, 79)
+        darkYellow = (202, 184, 28)
+        green = (0, 230, 0)
+        softGreen = (147, 218, 115)
+        uncoloredBlue = (100, 139, 139)
+
         fig = plt.figure()
 
         ax = plt.Axes(fig, (0, 0, 1, 1))
@@ -309,33 +320,33 @@ class Blueprint:
             rowAux = []
             for element in row:
                 if element == '-':
-                    rowAux.append((54, 0, 67))
+                    rowAux.append(purple)
                 if element == '.':
-                    rowAux.append((100, 139, 139))
+                    rowAux.append(uncoloredBlue)
                 if element == '#':
-                    rowAux.append((51, 53, 108))
+                    rowAux.append(darkBlue)
             gridAux.append(rowAux)
 
         for router in solution:
-            if router == (-1,-1):
+            if router == (-1, -1):
                 continue
             coveredCells = self.accessCoverageDict(router)
             for cell in coveredCells:
-                setGridContent(gridAux, (13, 152, 186), cell)
+                setGridContent(gridAux, softBlue, cell)
 
         paths = self.accessMstPathsDict(solution)
         for cell in paths:
-            if gridAux[cell[0]][cell[1]] == (51, 53, 108):
-                setGridContent(gridAux, (202, 184, 28), cell)
+            if gridAux[cell[0]][cell[1]] == darkBlue:
+                setGridContent(gridAux, darkYellow, cell)
             else:
-                setGridContent(gridAux, (253,235,79), cell)
+                setGridContent(gridAux, yellow, cell)
 
         for router in solution:
-            if router == (-1,-1):
+            if router == (-1, -1):
                 continue
-            setGridContent(gridAux, (147, 218, 115), router)
+            setGridContent(gridAux, softGreen, router)
 
-        setGridContent(gridAux, (0, 230, 0), self.backbonePosition)
+        setGridContent(gridAux, green, self.backbonePosition)
 
         ax.imshow(gridAux)
 
@@ -343,13 +354,3 @@ class Blueprint:
             plt.savefig(fpath)
 
         plt.show()
-
-
-# Blueprint end
-
-if __name__ == "__main__":
-    blueprint = Blueprint("../inputs/lets_go_higher.in")
-    blueprint.printGrid()
-
-
-
