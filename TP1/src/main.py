@@ -59,25 +59,34 @@ def menu():
         print("[0] Quit")
         val = input("Option: ")
 
-        print("Generating inital solution...")
-        solution = utils.generateSolution(blueprint)
-        print("Generated inital solution.")
         algorithmName = ""
 
         startTime = time.time()
         if val == str(1):
+            print("Generating inital solution...")
+            solution = utils.generateSolution(blueprint)
+            print("Generated inital solution.")
             simulatedAnnealing()
             algorithmName = "annealing"
         elif val == str(2):
+            print("Generating inital solution...")
+            solution = utils.generateSolution(blueprint)
+            print("Generated inital solution.")
             solution = hillClimbing.hillClimbing(blueprint, solution)
             algorithmName = "hill_climbing_regular"
         elif val == str(3):
+            print("Generating inital solution...")
+            solution = utils.generateSolution(blueprint)
+            print("Generated inital solution.")
             solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
             algorithmName = "hill_climbing_steepest"
         elif val == str(4):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)
             algorithmName = "genetic"
         elif val == str(5):
+            print("Generating inital solution...")
+            solution = utils.generateSolution(blueprint)
+            print("Generated inital solution.")
             solution = tabuSearch.tabuSearch(blueprint, solution)
             algorithmName = "tabu"
         elif val == str(0):

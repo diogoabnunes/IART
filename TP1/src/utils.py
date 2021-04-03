@@ -222,6 +222,7 @@ def orderRouters(solution):
 
 def printSolToFile(solution, time, filename):
     with open(filename, "w") as file:
+        file.write("Solution value: " + str(time) + "s")
         file.write("Execution time: " + str(time) + "s")
         for router in solution:
             file.write(str(router) + "\n")
