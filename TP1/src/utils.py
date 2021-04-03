@@ -127,13 +127,16 @@ def getIndiceOfLastNonEmptyRouter(solution) -> int:
             return len(solution) - i - 1
 
 
-def randomNeighbour(blueprint, solution: list):  # can return an infeasible solution
+def randomNeighbour(blueprint, solution: list, remove=False):  # can return an infeasible solution
     """
     Given a solution, returns a random neighbour and the respective value.
     """
     routersNum = routersPlaced(solution)
 
-    routerChange = random.randint(0, routersNum - 1)
+    if remove:
+        routerChange = random.randint(0, getIndiceOfLastNonEmptyRouter(solution))
+    else:
+        routerChange = random.randint(0, routersNum - 1)
     coordChange = random.randint(0, 1)
     upOrDown = random.randint(0, 1)
 
@@ -145,7 +148,7 @@ def randomNeighbour(blueprint, solution: list):  # can return an infeasible solu
     elif upOrDown == 0:
         add = -1
 
-    if upOrDown == -1:
+    if remove:
         neighbour[routerChange] = (-1, -1)
     else:
         if coordChange == 0:

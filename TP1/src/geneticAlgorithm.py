@@ -30,10 +30,12 @@ def mutation(blueprint, sol):
     :return: Solution with a mutation.
     """
     r = routersPlaced(sol)
-    rand = random.randint(0, r - 1)
+    if r == 0:
+        return sol
 
-    routerToMutate = list(sol[rand])
-    # to do
+    routersToRemove = random.randint(1, min(1, blueprint.getMaxRouters() // 10))
+    for i in range(routersToRemove):
+        sol = randomNeighbour(blueprint, sol, True)
 
     return sol
 
@@ -51,35 +53,35 @@ def generateInitialPopulation(blueprint):
 
     iteration = 0
     lastIteration = 8
-    solLength = 0
 
 
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
         individualSol = []
-        while solLength < maxLength:
+        for j in range(maxLength):
             rand = random.randint(0, len(validPositions) - 1)
             while validPositions[rand] in individualSol:
                 rand = random.randint(0, len(validPositions) - 1)
 
             individualSol.append(validPositions[rand])
 
-            if len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
+            while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
                 individualSol.pop()
-                continue
-
-            if value(blueprint, individualSol) is None:
-                individualSol.pop()
-                while len(individualSol) < maxLength:
-                    individualSol.append((-1, -1))
-                break
+                rand = random.randint(0, len(validPositions) - 1)
+                while validPositions[rand] in individualSol:
+                    rand = random.randint(0, len(validPositions) - 1)
+                individualSol.append(validPositions[rand])
 
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < maxLength:
                     individualSol.append((-1, -1))
                 break
 
-            solLength += 1
+            if value(blueprint, individualSol) is None:
+                individualSol.pop()
+                while len(individualSol) < maxLength:
+                    individualSol.append((-1, -1))
+                break
 
         individualSol = orderRouters(individualSol)
 
@@ -113,7 +115,7 @@ def geneticAlgorithm(blueprint):
             y = population[random.randint(0, int(len(population) / 2))]
             child = crossover(x, y)
 
-            if random.randint(0, 100) < 50:  # to change
+            if random.randint(0, 100) < 10:  # to change
                 child = mutation(blueprint, child)
 
             child = orderRouters(child)
