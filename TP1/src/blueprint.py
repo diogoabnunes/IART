@@ -14,6 +14,7 @@ import kruskal
 import matplotlib
 import matplotlib.pyplot as plt
 
+
 class Blueprint:
     def __init__(self, filename):
         with open(filename) as file:
@@ -50,7 +51,6 @@ class Blueprint:
                         self.validPositions.append((i, j))
                     elif self.atGrid((i, j)) == ".":
                         self.targetCoveredCells += 1
-                        
 
     def getCellNeighbours(self, coord):
         """ Returned neighbours do not include walls """
@@ -121,7 +121,7 @@ class Blueprint:
         if not atGrid:
             return False
         return atGrid != '#'
-    
+
     def notVoid(self, x, y=None):
         """
         Checks if a position is valid and isn't a void.
@@ -156,9 +156,10 @@ class Blueprint:
             setGridContent(gridToPrint, "\033[37;43m" + self.atGrid(coord) + "\033[m", coord)
 
         for router in solution:
+            if router == (-1, -1):
+                continue
             setGridContent(gridToPrint, "\033[37;43mr\033[m", router)
         setGridContent(gridToPrint, "\033[37;43mb\033[m", self.backbonePosition)
-
 
         rowsInStr = []
         for row in gridToPrint:
@@ -178,6 +179,8 @@ class Blueprint:
             setGridContent(gridToPrint, "\033[37;42m" + self.atGrid(coord) + "\033[m", coord)
 
         for router in solution:
+            if router == (-1, -1):
+                continue
             setGridContent(gridToPrint, "r", router)
 
         rowsInStr = []
@@ -296,7 +299,8 @@ class Blueprint:
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def plotSolution(self, solution, fpath=None):      # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
+    def plotSolution(self, solution,
+                     fpath=None):  # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
         """
         Coverage plot.
         """

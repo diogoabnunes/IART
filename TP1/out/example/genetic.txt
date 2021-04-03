@@ -1,0 +1,6 @@
+Solution value: 48009
+Remaining budget: 9
+Execution time: 0.011001110076904297s
+
+(5, 13)
+(5, 5)
