@@ -297,8 +297,8 @@ def printSolToFile(solution, time, blueprint, filename):
     Prints a solution information to a file.
     """
     with open(filename, "w") as file:
-        file.write("Solution value: " + value(blueprint, solution) + "\n")
-        file.write("Remaining budget: " + remainingBudget(blueprint, solution) + "\n")
+        file.write("Solution value: " + str(value(blueprint, solution)) + "\n")
+        file.write("Remaining budget: " + str(remainingBudget(blueprint, solution)) + "\n")
         file.write("Execution time: " + str(time) + "s\n")
         file.write("\n")
         for router in solution:
