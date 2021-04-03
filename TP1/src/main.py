@@ -2,13 +2,10 @@ import random
 import geneticAlgorithm
 import hillClimbing
 import tabuSearch
+import simulatedAnnealing
 import utils
 import blueprint as bp
 import time
-
-
-def simulatedAnnealing():
-    print("Algorithm: Simulated Annealing (not implemented yet)\n")
 
 
 def menu():
@@ -67,7 +64,7 @@ def menu():
             print("Generating initial solution...")
             solution = utils.generateSolution(blueprint)
             print("Generated initial solution.")
-            simulatedAnnealing()
+            solution = simulatedAnnealing.simulatedAnnealing(blueprint, solution)
             algorithmName = "annealing"
         elif val == str(2):
             print("Generating initial solution...")

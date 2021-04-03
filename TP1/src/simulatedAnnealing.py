@@ -16,6 +16,7 @@ def simulatedAnnealing(blueprint, solution):
     initialTemp = 10000
     finalTemp = 10
     alpha = 0.99
+    currentIter = 1
 
     currentTemp = initialTemp
     currentSolution = solution.copy()
@@ -24,7 +25,7 @@ def simulatedAnnealing(blueprint, solution):
     print("Initial solution value:", currentSolutionValue)
 
     while currentTemp > finalTemp:
-        print("Temp:", currentTemp)
+        print("Temperature:", currentTemp)
         # 10 iterations per temperature
         for _ in range(10):
             # Accept only a valid neighbour
@@ -39,15 +40,19 @@ def simulatedAnnealing(blueprint, solution):
             # Neighbour is better that current solution
             if delta > 0:
                 currentSolution, currentSolutionValue = neighbour, neighbourValue
-                print("New solution! Value:", currentSolutionValue)
+                print("Upgrade! Value:", currentSolutionValue)
             elif delta == 0:
                 pass
             # If Neighbour is worse, accept it with a probability of e^(delta/temperature)
             else:
+                print("Probability: " + str(math.exp(delta / currentTemp)) +
+                      "; delta: " + str(delta))
                 if random.uniform(0, 1) < math.exp(delta / currentTemp):
                     currentSolution, currentSolutionValue = neighbour, neighbourValue
-                    print("New solution with temperature", currentTemp, "! Value:", currentSolutionValue)
+                    print("Upgrade! Value: " + str(currentSolutionValue))
         # decrement the temperature
-        currentTemp *= alpha
+        currentTemp = initialTemp * alpha ** currentIter
+        currentIter += 1
 
+    print("Solution value: " + str(currentSolutionValue))
     return currentSolution
