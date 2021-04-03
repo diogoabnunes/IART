@@ -16,7 +16,7 @@ class Node:
 
     # Sort nodes
     def __lt__(self, other):
-        processedCost = 1
+        processedCost = 0.8
         return (processedCost*self.cost + self.heurisitic) < (processedCost*other.cost + other.heurisitic)
 
     def __repr__(self):
