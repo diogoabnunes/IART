@@ -26,8 +26,7 @@ def crossover(sol1, sol2):
 
 def mutation(blueprint, sol):
     """
-    Makes a Mutation in a solution of routers positions.
-    :return: Solution with a mutation.
+    TODO
     """
     r = routersPlaced(sol)
     routersToRemove = max(1, blueprint.getMaxRouters() // 10)
@@ -48,7 +47,7 @@ def generateInitialPopulation(blueprint):
     population = []
     positionsAdded = {}
     iteration = 0
-    lastIteration = 8
+    lastIteration = 10
 
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))

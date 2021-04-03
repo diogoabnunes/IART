@@ -1,3 +1,4 @@
+import random
 import geneticAlgorithm
 import hillClimbing
 import tabuSearch
@@ -12,6 +13,12 @@ def simulatedAnnealing():
 
 def menu():
     print("IART - Router Placement")
+
+    # seed = random.randrange(999999999)
+    # rng = random.Random(seed)
+    # print("Seed is:", seed)
+    # random.seed(seed)
+    random.seed(157013863)
 
     while True:
         print("\nFile input")
@@ -60,6 +67,7 @@ def menu():
         val = input("Option: ")
 
         algorithmName = ""
+        # random.seed(seed)
 
         startTime = time.time()
         if val == str(1):
@@ -111,24 +119,6 @@ def menu():
         utils.printSolToFile(solution, endTime - startTime, blueprint, "../out/" + outFileName + ".txt")
 
         print("------------------------------------------------------------------------------------------------")
-
-        # print("\nWhat do you wish to do?")
-        # print("[1] Start Over")
-        # print("[2] Quit")
-        # option = input("Option: ")
-        #
-        # if option == str(1):
-        #     continue
-        # elif option == str(2):
-        #     print("\nAre you sure you want to leave?")
-        #     print("[1] No, I am staying!")
-        #     print("[2] Yes...")
-        #     option1 = input("Option: ")
-        #
-        #     if option1 == str(1):
-        #         continue
-        #     elif option1 == str(2):
-        #         break
                 
 
 if __name__ == "__main__":
