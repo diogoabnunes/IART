@@ -29,11 +29,14 @@ def mutation(blueprint, sol):
     Makes a Mutation in a solution of routers positions.
     :return: Solution with a mutation.
     """
+    print("Mutation!")
     r = routersPlaced(sol)
-    rand = random.randint(0, r - 1)
-
-    routerToMutate = list(sol[rand])
-    # to do
+    routersToRemove = max(1, blueprint.getMaxRouters() // 10)
+    for i in range(routersToRemove):
+        if r == 0:
+            break
+        sol = randomNeighbour(blueprint, sol, True)[0]
+        r -= 1
 
     return sol
 
@@ -88,9 +91,6 @@ def generateInitialPopulation(blueprint):
 
     population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
 
-    for sol in population:
-        print(getIndiceOfLastNonEmptyRouter(sol))
-
     print("Generating initial population: Done!")
     return population
 
@@ -133,10 +133,10 @@ def geneticAlgorithm(blueprint):
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/charleston_road.in")
 
-    # seed = random.randrange(999999999)
-    # rng = random.Random(seed)
-    # print("Seed was:", seed)
-    random.seed(1)
+    seed = random.randrange(999999999)
+    rng = random.Random(seed)
+    print("Seed was:", seed)
+    # random.seed(1)
 
     startTime = time.process_time()
     solution = geneticAlgorithm(blueprint)

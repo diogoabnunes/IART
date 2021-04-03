@@ -11,7 +11,6 @@ bc: Column of initial cell that is already connected to the backbone
 """
 from utils import *
 import kruskal
-import matplotlib
 import matplotlib.pyplot as plt
 
 class Blueprint:
@@ -46,9 +45,8 @@ class Blueprint:
 
             for i in range(self.height):
                 for j in range(self.width):
-                    if self.atGrid((i, j)) != "#":
+                    if self.atGrid((i, j)) == "." or self.atGrid((i, j)) == "-":
                         self.validPositions.append((i, j))
-                    elif self.atGrid((i, j)) == ".":
                         self.targetCoveredCells += 1
                         
 
@@ -117,6 +115,8 @@ class Blueprint:
         """
         Checks if a position is valid and doesn't have a wall.
         """
+        if x == (-1, -1) or x == -1 and y == -1:
+            return True
         atGrid = self.atGrid(x, y)
         if not atGrid:
             return False

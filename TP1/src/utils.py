@@ -133,20 +133,31 @@ def generateSolution(blueprint):
     :return:
     """
     individualSol = []
+    positionsAdded = {}
     while True:
         for j in range(blueprint.getMaxRouters()):
             rand = random.randint(0, len(blueprint.validPositions) - 1)
-            while blueprint.validPositions[rand] in individualSol:
+            while True:
+                try:
+                    positionsAdded[rand]
+                except KeyError:
+                    break
                 rand = random.randint(0, len(blueprint.validPositions) - 1)
+                continue
 
             individualSol.append(blueprint.validPositions[rand])
-
-            while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
-                individualSol.pop()
-                rand = random.randint(0, len(blueprint.validPositions) - 1)
-                while blueprint.validPositions[rand] in individualSol:
-                    rand = random.randint(0, len(blueprint.validPositions) - 1)
-                individualSol.append(blueprint.validPositions[rand])
+            positionsAdded[rand] = True
+            # while len(blueprint.accessCoverageDict(individualSol[-1])) <= 3:
+            #     individualSol.pop()
+            #     rand = random.randint(0, len(blueprint.validPositions) - 1)
+            #     while True:
+            #         try:
+            #             positionsAdded[rand]
+            #         except KeyError:
+            #             break
+            #         rand = random.randint(0, len(blueprint.validPositions) - 1)
+            #         continue
+            #     individualSol.append(blueprint.validPositions[rand])
 
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < blueprint.getMaxRouters():
@@ -180,10 +191,7 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
     """
     routersNum = routersPlaced(solution)
 
-    if remove:
-        routerChange = random.randint(0, getIndiceOfLastNonEmptyRouter(solution))
-    else:
-        routerChange = random.randint(0, routersNum - 1)
+    routerChange = random.randint(0, getIndiceOfLastNonEmptyRouter(solution))
     coordChange = random.randint(0, 1)
     upOrDown = random.randint(0, 1)
 
@@ -196,7 +204,9 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
         add = -1
 
     if remove:
-        neighbour[routerChange] = (-1, -1)
+        lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
+        neighbour[routerChange] = neighbour[lastIx]
+        neighbour[lastIx] = (-1, -1)
     else:
         if coordChange == 0:
             neighbour[routerChange] = (neighbour[routerChange][0] + add, neighbour[routerChange][1])
@@ -216,7 +226,7 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
     :param solution: Initial solution.
     :param routerToChange: index, between 0 and number of router in the solution
     :param coordToChange: 0 or 1, 0 changes x, 1 changes y
-    :param upOrDown: 1 increments, 0 decrements, -1 makes the router at routerToChange [-1,
+    :param upOrDown: 1 increments, 0 decrements, -1 makes the router at routerToChange (-1, -1)
     :param numRouters: if it's lower than the number of routers in the solution, removes the worst router
     :return: The pretended neighbour and his value.
     """

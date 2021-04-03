@@ -14,14 +14,14 @@ def hillClimbing(blueprint, solution):
             for i in range(numRouters):
                 for j in range(0, 2):
                     for k in range(0, 2):
-                        for l in range(1, max(1, blueprint.routerRadius // 2)):
+                        for l in range(1, max(3, blueprint.routerRadius // 2)):
                             neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters, l)
                             if neighbourSolution is None and neighbourValue is None:
                                 continue
                             if compareLists(solution, neighbourSolution):
                                 continue
 
-                            if neighbourValue > solutionValue:
+                            if neighbourValue >= solutionValue:
                                 solutionValue = neighbourValue
                                 solution = neighbourSolution.copy()
                                 iteration = 0
@@ -62,7 +62,7 @@ def hillClimbingSteepestAscend(blueprint, solution):
                             if compareLists(solution, neighbourSolution):
                                 continue
 
-                            if neighbourValue > steepest[1]:
+                            if neighbourValue >= steepest[1]:
                                 steepest = (neighbourSolution, neighbourValue)
                                 upgrade = True
         if solutionValue < steepest[1]:
@@ -80,12 +80,14 @@ if __name__ == "__main__":
     print("Seed is:", seed)
     random.seed(seed)
     # random.seed(72710764)
-    blueprint = bp.Blueprint("../inputs/example.in")
-
+    blueprint = bp.Blueprint("../inputs/charleston_road.in")
     print("Generating initial solution...")
+    startTime = time.process_time()
     solution = generateSolution(blueprint)
-    print("Generated initial solution.")
     regularStartTime = time.process_time()
+    print("Generated initial solution.")
+    print(f"Time: {regularStartTime - startTime} seconds\n")
+
     s2 = hillClimbing(blueprint, solution)
     regularEndTime = time.process_time()
     blueprint.plotSolution(s2)
