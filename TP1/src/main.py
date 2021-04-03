@@ -84,12 +84,9 @@ def menu():
             algorithmName = "hill_climbing_regular"
         elif val == str(3):
             print("Generating initial solution...")
-            startSteep = time.time()
             solution = utils.generateSolution(blueprint)
-            endSteep = time.time()
-            print(f"\nTime: {endSteep - startSteep} seconds\n")
             print("Generated initial solution.")
-            solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
+            solution = hillClimbing.hillClimbingSteepestAscent(blueprint, solution)
             algorithmName = "hill_climbing_steepest"
         elif val == str(4):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)

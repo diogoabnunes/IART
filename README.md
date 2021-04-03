@@ -3,7 +3,7 @@
 ### To do:
 
 - Simulated Annealing
-- Fix Tabu and Hill Climbing
+- Fix Tabu
 - Slides
 - Code comments:
     - blueprint.py
