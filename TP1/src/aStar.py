@@ -5,7 +5,7 @@ import math
 
 class Node:
     """
-    Auxiliary strucure to help to the A* algorithm
+    Auxiliary structure to help to the A* algorithm
     """
     def __init__(self, pos, parent, h=0, cost=0):
         self.position = pos
@@ -55,7 +55,7 @@ def aStar(blueprint, startCoord, endCoord):
         # Mark node as visited
         closed.append(currentNode)
 
-        # If fininshed
+        # If finished
         if currentNode == endNode:
             path = []
             # Create path

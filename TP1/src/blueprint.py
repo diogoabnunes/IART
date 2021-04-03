@@ -177,13 +177,12 @@ class Blueprint:
 
     def printSolutionCoverage(self, solution):
         """
-        Prints in the blueprint the router and the cells covered by them.
+        Prints (in the console/terminal) in the blueprint the router and the cells covered by them.
         """
-
         cellsCovered = self.getSolutionCoveredCells(solution)
         print("Cells covered: " + str(len(cellsCovered)))
 
-        gridToPrint = []
+        gridToPrint = []  # Console grid
         for row in self.grid:
             gridToPrint.append(row.copy())
 
@@ -216,6 +215,7 @@ class Blueprint:
             return None
         ret = []
 
+        # Coverage limits
         upperCoverage = max(0, coords[0] - self.routerRadius)
         leftCoverage = max(0, coords[1] - self.routerRadius)
         rightCoverage = min(self.width, coords[1] + self.routerRadius)
@@ -232,18 +232,24 @@ class Blueprint:
         for x in range(upperCoverage, bottomCoverage + 1):
             for y in range(leftCoverage, rightCoverage + 1):
                 if self.atGrid((x, y)) == ".":
-                    (a, b) = (coords[0], coords[1])
+                    (a, b) = (coords[0], coords[1])  # Router coordinates
+                    # (x, y): Cell coordinates
 
                     minX = min(a, x)
                     maxX = max(a, x)
                     minY = min(b, y)
                     maxY = max(b, y)
 
+                    # There is no wall cell inside the smallest enclosing rectangle of [a, b] and [x, y].
+                    # That is, there is no wall cells [w, v] where both:
+                    # min(a, x) <= w <= max(a, x)
+                    # min(b, y) <= v <= max(b, y)
                     append = True
                     for (wallX, wallY) in walls:
                         if (maxX >= wallX >= minX) and (maxY >= wallY >= minY):
+                            # If 1 wall satisfies the condition, then the cell can't have coverage.
+                            # If no wall satisfies the condition, then the cell have coverage.
                             append = False
-
                     if append:
                         ret.append((x, y))
         return ret
@@ -271,7 +277,7 @@ class Blueprint:
 
     def accessCoverageDict(self, router):
         """
-        Returns a number of covered cells by one router.
+        Access or computes the covered cells by one router.
         """
         try:
             coverage = self.cellsCoverage[router]
@@ -283,7 +289,7 @@ class Blueprint:
 
     def accessMstDict(self, solution):
         """
-
+        Access or computes the minimum spanning tree of a graph, whose nodes are the routers of a solution plus the backbone position.
         """
         try:
             mst = self.msts[tuple(solution)]
@@ -296,7 +302,7 @@ class Blueprint:
 
     def accessMstPathsDict(self, solution):
         """
-        Access or create a path for a given solution.
+        Access or create the backbone cells path for a given solution.
         """
         try:
             paths = self.mstPaths[tuple(solution)]
@@ -321,6 +327,8 @@ class Blueprint:
         """
         Coverage plot.
         """
+
+        # Plot colors
         purple = (54, 0, 67)
         darkBlue = (51, 53, 108)
         softBlue = (13, 152, 186)
@@ -336,7 +344,9 @@ class Blueprint:
         ax.set_axis_off()
         fig.add_axes(ax)
 
-        gridAux = []
+        gridAux = []  # Colors grid
+
+        # Colors void cells, target cells and wall cells
         for row in self.grid:
             rowAux = []
             for element in row:
@@ -348,6 +358,7 @@ class Blueprint:
                     rowAux.append(darkBlue)
             gridAux.append(rowAux)
 
+        # Colors covered cells
         for router in solution:
             if router == (-1, -1):
                 continue
@@ -355,18 +366,22 @@ class Blueprint:
             for cell in coveredCells:
                 setGridContent(gridAux, softBlue, cell)
 
+        # Colors paths
         paths = self.accessMstPathsDict(solution)
         for cell in paths:
             if gridAux[cell[0]][cell[1]] == darkBlue:
+                # If path cell coincides with a wall cell, make it darker
                 setGridContent(gridAux, darkYellow, cell)
             else:
                 setGridContent(gridAux, yellow, cell)
 
+        # Colors routers
         for router in solution:
             if router == (-1, -1):
                 continue
             setGridContent(gridAux, softGreen, router)
 
+        # Colors backbone
         setGridContent(gridAux, green, self.backbonePosition)
 
         ax.imshow(gridAux)

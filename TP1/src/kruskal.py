@@ -2,7 +2,11 @@ import utils
 from hillClimbing import *
 import aStar
 
+
 class Node:
+    """
+    Auxiliary structure to aid in the Kruskal algorithm. A list of nodes and edges compose
+    """
     def __init__(self, coord, kruskalParent = None, kruskalRank = 0):
         self.coord = coord
         self.kruskalParent = kruskalParent
@@ -13,17 +17,23 @@ class Node:
         return self.coord == o.coord
 
     def retrieveRoot(self):
+        """
+        :return: The node's graph root
+        """
         if self.kruskalParent is None:
             return self
         current = self.kruskalParent
         previous = self
-        while current != None:
+        while current is not None:
             previous = current
             current = current.kruskalParent
         return previous
 
 
 class Edge:
+    """
+    Edge of
+    """
     def __init__(self, nodeFrom : Node, nodeTo : Node, cost):
         self.nodeFrom = nodeFrom
         self.nodeTo = nodeTo
@@ -38,13 +48,6 @@ class Graph:
         self.nodes = nodes
         self.edges = edges
         self.cost = 0
-
-    # def calcCostPrediction(self):
-    #     if self.cost != 0:
-    #         return self.cost
-    #     for edge in self.edges:
-    #         self.cost += edge.cost
-    #     return self.cost
 
     def kruskal(self):
         sortedEdges = sorted(self.edges)
@@ -69,7 +72,7 @@ class Graph:
         return backboneCells
 
 
-def chooseRoot(node1 : Node, node2 : Node):
+def chooseRoot(node1: Node, node2: Node):
     node1 = node1.retrieveRoot()
     node2 = node2.retrieveRoot()
     if node1.kruskalRank < node2.kruskalRank:

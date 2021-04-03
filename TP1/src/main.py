@@ -14,12 +14,6 @@ def simulatedAnnealing():
 def menu():
     print("IART - Router Placement")
 
-    # seed = random.randrange(999999999)
-    # rng = random.Random(seed)
-    # print("Seed is:", seed)
-    # random.seed(seed)
-    random.seed(157013863)
-
     while True:
         print("\nFile input")
         print("[1] example.in (8x22)")
@@ -67,7 +61,6 @@ def menu():
         val = input("Option: ")
 
         algorithmName = ""
-        # random.seed(seed)
 
         startTime = time.time()
         if val == str(1):

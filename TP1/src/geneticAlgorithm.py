@@ -29,6 +29,7 @@ def mutation(blueprint, sol):
     Chooses a number of routers to mutate and replace them with random neighbours.
     """
     r = routersPlaced(sol)
+
     routersToMutate = max(1, blueprint.getMaxRouters() // 10)
     for i in range(routersToMutate):
         if r == 0:
@@ -88,16 +89,16 @@ def generateInitialPopulation(blueprint):
                     individualSol.append((-1, -1))
                 break
 
-            # Check if
+            # Check if the solution value exceeds the budget.
+            # If so, it means we can't have the last router added and we can fill the solution list with (-1, -1)
             if value(blueprint, individualSol) is None:
                 individualSol.pop()
                 while len(individualSol) < blueprint.getMaxRouters():
                     individualSol.append((-1, -1))
                 break
 
-        if value(blueprint, individualSol) is not None:
-            iteration += 1
-            population.append(individualSol)
+        iteration += 1
+        population.append(individualSol)
 
     population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
 
@@ -116,17 +117,18 @@ def geneticAlgorithm(blueprint):
 
     while iteration < lastIteration:
         print("Generation... " + str(iteration) + "/" + str(lastIteration))
+
         nextGeneration = []
 
         for i in range(int(len(population))):
-            x = population[random.randint(0, int(len(population) / 2))]
-            y = population[random.randint(0, int(len(population) / 2))]
+            # for each generation, it generates the at most the number of children as the actual population
+            x = population[random.randint(0, int(len(population) / 2))]  # randomizing in the best half of population
+            y = population[random.randint(0, int(len(population) / 2))]  # randomizing in the best half of population
             child = crossover(x, y)
 
-            if random.randint(0, 100) < 10:  # to change
+            if random.randint(0, 100) < 10:  # 10% chance of a child to be mutated
                 child = mutation(blueprint, child)
 
-            child = orderRouters(child)
             if value(blueprint, child) is not None:
                 nextGeneration.append(child)
 
@@ -136,26 +138,6 @@ def geneticAlgorithm(blueprint):
 
     print("Generation... Done!")
     print("Solution value: " + str(value(blueprint, population[0])))
+
+    # The population is ordered by value, so the first solution is the best one
     return population[0]
-
-
-# TO CLEAN THIS
-if __name__ == "__main__":
-    blueprint = bp.Blueprint("../inputs/charleston_road.in")
-
-    seed = random.randrange(999999999)
-    rng = random.Random(seed)
-    print("Seed was:", seed)
-    # random.seed(1)
-
-    startTime = time.process_time()
-    solution = geneticAlgorithm(blueprint)
-    endTime = time.process_time()
-
-    print("Genetic Algorithm")
-    print(str(value(blueprint, solution)) + " points")
-    blueprint.printSolutionCoverage(solution)
-    blueprint.printSolutionPaths(solution)
-
-    print(f"Time: {endTime - startTime} seconds")
-    blueprint.reset()
