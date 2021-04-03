@@ -47,45 +47,53 @@ def generateInitialPopulation(blueprint):
     :return: list with population of first generation.
     """
     population = []
-
-    maxLength = blueprint.getMaxRouters()
-    validPositions = blueprint.validPositions
-
-
+    positionsAdded = {}
     iteration = 0
     lastIteration = 8
 
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
         individualSol = []
-        for j in range(maxLength):
-            rand = random.randint(0, len(validPositions) - 1)
-            while validPositions[rand] in individualSol:
-                rand = random.randint(0, len(validPositions) - 1)
+        for j in range(blueprint.getMaxRouters()):
+            rand = random.randint(0, len(blueprint.validPositions) - 1)
+            while True:
+                try:
+                    positionsAdded[rand]
+                except KeyError:
+                    break
+                rand = random.randint(0, len(blueprint.validPositions) - 1)
+                continue
 
-            individualSol.append(validPositions[rand])
+            individualSol.append(blueprint.validPositions[rand])
+            positionsAdded[rand] = True
 
             while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
                 individualSol.pop()
-                rand = random.randint(0, len(validPositions) - 1)
-                while validPositions[rand] in individualSol:
-                    rand = random.randint(0, len(validPositions) - 1)
-                individualSol.append(validPositions[rand])
+                rand = random.randint(0, len(blueprint.validPositions) - 1)
+                while True:
+                    try:
+                        positionsAdded[rand]
+                    except KeyError:
+                        break
+                    rand = random.randint(0, len(blueprint.validPositions) - 1)
+                    continue
+
+                individualSol.append(blueprint.validPositions[rand])
 
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
-                while len(individualSol) < maxLength:
+                while len(individualSol) < blueprint.getMaxRouters():
                     individualSol.append((-1, -1))
                 break
 
             if value(blueprint, individualSol) is None:
                 individualSol.pop()
-                while len(individualSol) < maxLength:
+                while len(individualSol) < blueprint.getMaxRouters():
                     individualSol.append((-1, -1))
                 break
 
         if value(blueprint, individualSol) is not None:
-                iteration += 1
-                population.append(individualSol)
+            iteration += 1
+            population.append(individualSol)
 
     population.sort(reverse=True, key=lambda elem: value(blueprint, elem))
 
