@@ -8,36 +8,34 @@ def hillClimbing(blueprint, solution):
     solutionValue = value(blueprint, solution)
     print("\nStarting solution value:", solutionValue)
     iteration = 0
-    upgrade = False
-    while iteration <= 1:
-        for numRouters in range(maxRouters, -1, -1):
+    upgrade = True
+    while iteration < 50 and upgrade:
+        upgrade = False
+        for numRouters in range(maxRouters, maxRouters//2, -1):
             for i in range(numRouters):
                 for j in range(0, 2):
                     for k in range(0, 2):
-                        for l in range(1, max(3, blueprint.routerRadius // 2)):
-                            neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters, l)
-                            if neighbourSolution is None and neighbourValue is None:
-                                continue
-                            if compareLists(solution, neighbourSolution):
-                                continue
+                        # for l in range(1, max(3, blueprint.routerRadius // 2)):
+                        neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters, 1)
+                        if neighbourSolution is None and neighbourValue is None:
+                            continue
+                        if compareLists(solution, neighbourSolution):
+                            continue
 
-                            if neighbourValue > solutionValue:
-                                solutionValue = neighbourValue
-                                solution = neighbourSolution.copy()
-                                iteration = 0
-                                upgrade = True
-                                print("Upgrade:", solutionValue)
-                                break
-                        if upgrade:
+                        if neighbourValue > solutionValue:
+                            solutionValue = neighbourValue
+                            solution = neighbourSolution.copy()
+                            iteration += 1
+                            upgrade = True
+                            print("Upgrade", str(i) + "/" + str(50), ":", solutionValue)
                             break
+
                     if upgrade:
                         break
                 if upgrade:
                     break
             if upgrade:
-                upgrade = False
                 break
-        iteration += 1
     print("Final solution value:", solutionValue)
     return solution
 
@@ -53,6 +51,7 @@ def hillClimbingSteepestAscend(blueprint, solution):
     while upgrade:
         upgrade = False
         for numRouters in range(maxRouters, -1, -1):
+            print("trying with", numRouters, "routers")
             for i in range(numRouters):
                 for j in range(0, 2):
                     for k in range(0, 2):
@@ -62,13 +61,13 @@ def hillClimbingSteepestAscend(blueprint, solution):
                                 continue
                             if compareLists(solution, neighbourSolution):
                                 continue
-
                             if neighbourValue > steepest[1]:
+                                print("possible upgrade")
                                 steepest = (neighbourSolution, neighbourValue)
                                 upgrade = True
         if solutionValue < steepest[1]:
             print("Upgrade:", steepest[1])
-            solution, solutionValue = steepest
+        solution, solutionValue = steepest
 
     print("Final solution value:", solutionValue)
     return solution
