@@ -66,9 +66,10 @@ def aStar(blueprint, startCoord, endCoord):
                 if neighbourNode == node and neighbourNode.cost + neighbourNode.heurisitic >= node.cost + node.heurisitic:
                     addToOpen = False
 
-            if (addToOpen):
+            if addToOpen:
                 heapq.heappush(open, neighbourNode)
     return None
+
 
 def isDiagonal(pos1, pos2):
     ydiff = abs(pos1[0] - pos2[0])

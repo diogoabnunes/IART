@@ -30,12 +30,10 @@ def mutation(blueprint, sol):
     :return: Solution with a mutation.
     """
     r = routersPlaced(sol)
-    if r == 0:
-        return sol
+    rand = random.randint(0, r - 1)
 
-    routersToRemove = random.randint(1, min(1, blueprint.getMaxRouters() // 10))
-    for i in range(routersToRemove):
-        sol = randomNeighbour(blueprint, sol, True)
+    routerToMutate = list(sol[rand])
+    # to do
 
     return sol
 
@@ -53,7 +51,6 @@ def generateInitialPopulation(blueprint):
 
     iteration = 0
     lastIteration = 8
-
 
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
@@ -106,8 +103,6 @@ def geneticAlgorithm(blueprint):
 
     while iteration < lastIteration:
         print("Generation... " + str(iteration) + "/" + str(lastIteration))
-        for sol in population:
-            print(getIndiceOfLastNonEmptyRouter(sol))
         nextGeneration = []
 
         for i in range(int(len(population))):
