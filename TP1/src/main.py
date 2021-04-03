@@ -59,9 +59,9 @@ def menu():
         print("[0] Quit")
         val = input("Option: ")
 
-        print("Generating inital solution...")
+        print("Generating initial solution...")
         solution = utils.generateSolution(blueprint)
-        print("Generated inital solution.")
+        print("Generated initial solution.")
         algorithmName = ""
 
         startTime = time.time()
