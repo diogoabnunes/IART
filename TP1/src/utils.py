@@ -221,7 +221,7 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
     return neighbour, neighbourValue
 
 
-def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters, quantity = 1):
+def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters, calcValue = True):
     """
     :param blueprint: Problem blueprint.
     :param solution: Initial solution.
@@ -243,9 +243,9 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
 
     add = 0
     if upOrDown == 1:
-        add = quantity
+        add = 1
     elif upOrDown == 0:
-        add = -quantity
+        add = -1
 
     if upOrDown == -1:
         # print("removed router by upOrDown")
@@ -286,13 +286,13 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
             lastIx -= 1
             if lastIx == -1:
                 break
-
-    neighbourValue = value(blueprint, neighbour)
-    if neighbourValue is None:
-        # print("neighbour exceeds budget")
-        return None, None
-    return neighbour, neighbourValue
-
+    if calcValue:
+        neighbourValue = value(blueprint, neighbour)
+        if neighbourValue is None:
+            return None, None
+        return neighbour, neighbourValue
+    else:
+        return neighbour
 
 def orderRouters(solution):
     """
