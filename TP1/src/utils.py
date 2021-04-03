@@ -179,3 +179,9 @@ def orderRouters(solution):
         newSol.append(router)
 
     return newSol
+
+def printSolToFile(solution, filename = None):
+    with open(filename, "w") as file:
+        for router in solution:
+            file.write(str(router) + "\n")
+

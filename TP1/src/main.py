@@ -53,13 +53,12 @@ def menu():
 
         print("Choose algorithm to run")
         print("[1] Simulated Annealing")
-        print("[2] Hill Climbing")
-        print("[3] Genetic Algorithm")
-        print("[4] Tabu Search")
+        print("[2] Hill Climbing: Normal")
+        print("[3] Hill Climbing: Steepest Ascend")
+        print("[4] Genetic Algorithm")
+        print("[5] Tabu Search")
         print("[0] Quit")
         val = input("Option: ")
-    
-
 
         while True:
             solution = utils.generateMaxRoutersSolution(blueprint)
@@ -69,31 +68,41 @@ def menu():
                 continue
             break
 
+        algorithmName = ""
 
         startTime = time.time()
         if val == str(1):
             simulatedAnnealing()
+            algorithmName = "annealing"
         elif val == str(2):
             solution = hillClimbing.hillClimbing(blueprint, solution)
+            algorithmName = "hill_climbing_regular"
         elif val == str(3):
-            solution = geneticAlgorithm.geneticAlgorithm(blueprint)
+            solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
+            algorithmName = "hill_climbing_steepest"
         elif val == str(4):
+            solution = geneticAlgorithm.geneticAlgorithm(blueprint)
+            algorithmName = "genetic"
+        elif val == str(5):
             solution = tabuSearch.tabuSearch(blueprint, solution)
+            algorithmName = "tabu"
         elif val == str(0):
             break
         else:
             print("Algorithm not found\n")
             continue
         endTime = time.time()
-        print(f"\nTime: {endTime - startTime} seconds\n\n")
 
-        outFileNames = file.split("/")
-        outFileNames = outFileNames[-1]
+        outFileName = file.split("/")
+        outFileName = outFileName[-1]
+        outFileName = outFileName.split(".")
+        outFileName = outFileName[0] + "_" + algorithmName
 
-
-        blueprint.printSolutionCoverage(solution,)
-        blueprint.printSolutionPaths(solution,)
-        blueprint.plotSolution(solution, )
+        blueprint.printSolutionCoverage(solution)
+        blueprint.printSolutionPaths(solution)
+        print(f"\nTime: {endTime - startTime} seconds\n")
+        blueprint.plotSolution(solution, "../out/" + outFileName + ".png")
+        utils.printSolToFile(solution, "../out/" + outFileName + ".txt")
 
         print("\nWhat do you wish to do?")
         print("[1] Start Over")

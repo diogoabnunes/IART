@@ -144,7 +144,7 @@ class Blueprint:
         self.msts = {}
         self.cellsCoverage = {}
 
-    def printSolutionPaths(self, solution, filename = None):
+    def printSolutionPaths(self, solution):
         path = self.accessMstPathsDict(solution)
         print("Distance: " + str(len(path)))
 
@@ -164,13 +164,9 @@ class Blueprint:
         for row in gridToPrint:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
-        if filename is None:
-            print(gridStr)
-        else:
-            with open(filename, "w") as file:
-                file.write(gridStr)
+        print(gridStr)
 
-    def printSolutionCoverage(self, solution, filename = None):
+    def printSolutionCoverage(self, solution):
         cellsCovered = self.getSolutionCoveredCells(solution)
         print("Cells covered: " + str(len(cellsCovered)))
 
@@ -188,11 +184,7 @@ class Blueprint:
         for row in gridToPrint:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
-        if filename is None:
-            print(gridStr)
-        else:
-            with open(filename, "w") as file:
-                file.write(gridStr)
+        print(gridStr)
 
     def getMaxRouters(self) -> int:
         return int(self.budget / self.routerCost)
@@ -343,7 +335,8 @@ class Blueprint:
 
         ax.imshow(gridAux)
 
-        plt.savefig(fpath)
+        if fpath is not None:
+            plt.savefig(fpath)
 
         plt.show()
 
