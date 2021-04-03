@@ -14,24 +14,28 @@ def hillClimbing(blueprint, solution):
             for i in range(numRouters):
                 for j in range(0, 2):
                     for k in range(0, 2):
-                        neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters)
-                        if neighbourSolution is None and neighbourValue is None:
-                            continue
-                        if compareLists(solution, neighbourSolution):
-                            continue
+                        for l in range(1, max(1, blueprint.routerRadius // 2)):
+                            neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters, l)
+                            if neighbourSolution is None and neighbourValue is None:
+                                continue
+                            if compareLists(solution, neighbourSolution):
+                                continue
 
-                        if neighbourValue > solutionValue:
-                            solutionValue = neighbourValue
-                            solution = neighbourSolution.copy()
-                            iteration = 0
-                            upgrade = True
-                            print("Upgrade:", solutionValue)
+                            if neighbourValue > solutionValue:
+                                solutionValue = neighbourValue
+                                solution = neighbourSolution.copy()
+                                iteration = 0
+                                upgrade = True
+                                print("Upgrade:", solutionValue)
+                                break
+                        if upgrade:
                             break
                     if upgrade:
                         break
                 if upgrade:
                     break
             if upgrade:
+                upgrade = False
                 break
         iteration += 1
     print("Final solution value:", solutionValue)
@@ -51,15 +55,16 @@ def hillClimbingSteepestAscend(blueprint, solution):
             for i in range(numRouters):
                 for j in range(0, 2):
                     for k in range(0, 2):
-                        neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters)
-                        if neighbourSolution is None and neighbourValue is None:
-                            continue
-                        if compareLists(solution, neighbourSolution):
-                            continue
+                        for l in range(1, max(1, blueprint.routerRadius // 2)):
+                            neighbourSolution, neighbourValue = neighbour(blueprint, solution, i, j, k, numRouters, l)
+                            if neighbourSolution is None and neighbourValue is None:
+                                continue
+                            if compareLists(solution, neighbourSolution):
+                                continue
 
-                        if neighbourValue > steepest[1]:
-                            steepest = (neighbourSolution, neighbourValue)
-                            upgrade = True
+                            if neighbourValue > steepest[1]:
+                                steepest = (neighbourSolution, neighbourValue)
+                                upgrade = True
         if solutionValue < steepest[1]:
             print("Upgrade:", steepest[1])
         solution, solutionValue = steepest

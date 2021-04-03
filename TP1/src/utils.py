@@ -68,6 +68,15 @@ def value(blueprint, solution):  # also checks if solution is valid
         return None
     return 1000 * t + remainingBudget
 
+def remainingBudget(blueprint, solution):  # also checks if solution is valid
+    """
+   Calculates and returns the value of a solution.
+   """
+    t = len(blueprint.getSolutionCoveredCells(solution))
+    N = len(blueprint.accessMstPathsDict(solution))
+    M = routersPlaced(solution)
+    return blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
+
 
 def routersPlaced(solution) -> int:
     """
@@ -201,7 +210,7 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
     return neighbour, neighbourValue
 
 
-def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters):
+def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numRouters, quantity = 1):
     """
     :param blueprint: Problem blueprint.
     :param solution: Initial solution.
@@ -219,12 +228,14 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
 
     add = 0
     if upOrDown == 1:
-        add = 1
+        add = quantity
     elif upOrDown == 0:
-        add = -1
+        add = -quantity
 
     if upOrDown == -1:
-        neighbour[routerToChange] = (-1, -1)
+        lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
+        neighbour[routerToChange] = neighbour[lastIx]
+        neighbour[lastIx] = (-1, -1)
     else:
         if coordToChange == 0:
             neighbour[routerToChange] = (neighbour[routerToChange][0] + add, neighbour[routerToChange][1])
@@ -235,17 +246,26 @@ def neighbour(blueprint, solution, routerToChange, coordToChange, upOrDown, numR
         return None, None
 
     routersToRemove = routersPlaced(solution) - numRouters
-    if routersToRemove < 0:
-        auxSol = neighbour.copy()
-        for i in range(len(auxSol)):
-            auxSol[i] = (len(blueprint.accessCoverageDict(auxSol[i])), tuple(auxSol[i]), i)
-
-        heapq.heapify(auxSol)
+    if routersToRemove >= 0:
+        # auxSol = neighbour.copy()
+        # for i in range(len(auxSol)):
+        #     auxSol[i] = (len(blueprint.accessCoverageDict(auxSol[i])), tuple(auxSol[i]), i)
+        #
+        # heapq.heapify(auxSol)
+        # for i in range(routersToRemove):
+        #     removedRouter = heapq.heappop(auxSol)
+        #     indexToChange = getIndiceOfLastNonEmptyRouter(neighbour)
+        #     neighbour[removedRouter[2]] = neighbour[indexToChange]
+        #     neighbour[indexToChange] = (-1, -1)
+        lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
         for i in range(routersToRemove):
-            removedRouter = heapq.heappop(auxSol)
-            indexToChange = getIndiceOfLastNonEmptyRouter(neighbour)
-            neighbour[removedRouter[2]] = neighbour[indexToChange]
-            neighbour[indexToChange] = (-1, -1)
+            print("gere")
+            toRemove = random.randint(0, lastIx - 1)
+            neighbour[toRemove] = neighbour[lastIx]
+            neighbour[lastIx] = (-1, -1)
+            lastIx -= 1
+            if lastIx == -1:
+                break
 
     neighbourValue = value(blueprint, neighbour)
     if neighbourValue is None:
@@ -272,12 +292,13 @@ def orderRouters(solution):
     return newSol
 
 
-def printSolToFile(solution, time, filename):
+def printSolToFile(solution, time, blueprint, filename):
     """
     Prints a solution information to a file.
     """
     with open(filename, "w") as file:
-        file.write("Solution value: " + str(time) + "s")
+        file.write("Solution value: " + value(blueprint, solution))
+        file.write("Remaining budget: " + remainingBudget(blueprint, solution))
         file.write("Execution time: " + str(time) + "s")
         file.write("\n")
         for router in solution:
