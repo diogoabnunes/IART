@@ -4,18 +4,22 @@ import math
 
 
 class Node:
+    """
+    Auxiliary strucure to help to the A* algorithm
+    """
     def __init__(self, pos, parent, h=0, cost=0):
         self.position = pos
         self.parent = parent
         self.cost = cost
         self.heurisitic = h
 
-    # Compare nodes
     def __eq__(self, other):
         return self.position == other.position
 
     # Sort nodes
     def __lt__(self, other):
+        # The processed cost is reduced, in order to increase the A* algorithm's efficiency.
+        # Since this algorithm is running in a grid, the optimal solution is guaranteed.
         processedCost = 0.8
         return (processedCost * self.cost + self.heurisitic) < (processedCost * other.cost + other.heurisitic)
 
@@ -30,38 +34,53 @@ def aStar(blueprint, startCoord, endCoord):
             blueprint - class Blueprint
     """
     startCoord = tuple(startCoord)
+    # Check if start and end positions are valid
     if (not blueprint.atGrid(startCoord)) or (not blueprint.atGrid(endCoord)):
         return None
 
     startNode = Node(startCoord, None, distance(startCoord, endCoord))
     endNode = Node(endCoord, None, 0)
 
+    # 'open' is a priority queue with nodes to be expanded and is ordered by each node's cost
     open = [startNode]
     heapq.heapify(open)
+
+    # 'closed' is a list which contains the already visited nodes
     closed = []
 
+    # while open has at least one node
     while open:
         currentNode = heapq.heappop(open)
+
+        # Mark node as visited
         closed.append(currentNode)
 
+        # If fininshed
         if currentNode == endNode:
             path = []
+            # Create path
             while currentNode != startNode:
                 path.append(currentNode.position)
                 currentNode = currentNode.parent
             path.append(currentNode.position)
             return path[::-1]
 
+        # Get each neighbour cell
         neighbours = blueprint.getCellNeighbours(currentNode.position)
         for n in neighbours:
+            # Check move cost
             if isDiagonal(n, currentNode.position):
                 moveCost = math.sqrt(2)
             else:
                 moveCost = 1
+
             neighbourNode = Node(n, currentNode, distance(n, endCoord), currentNode.cost + moveCost)
+
+            # Node already visited
             if neighbourNode in closed: continue
 
             addToOpen = True
+            # Check if the neighbour already exists and, if it exists, check whether it's worth an update
             for node in open:
                 if neighbourNode == node and neighbourNode.cost + neighbourNode.heurisitic >= node.cost + node.heurisitic:
                     addToOpen = False

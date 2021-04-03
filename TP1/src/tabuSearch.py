@@ -6,7 +6,7 @@ import utils
 
 def getTabuStructure(blueprint,solution):
     """
-    Initializes the tabu data structure
+    Initializes the tabu data structure.
     :param blueprint:
     :param solution:
     :return: Returns a dictionnary with tuples of the format (routerNumber, xOrY, upOrDown, numberOfRouters) as keys
@@ -32,7 +32,7 @@ def getTabuStructure(blueprint,solution):
 
 def tabuSearch(blueprint, solution):
     """
-    Implementation of tabu search algorithm
+    Implementation of tabu search algorithm.
     :param blueprint:
     :param solution:
     :return: Returns the best found solution of router coords

@@ -51,7 +51,9 @@ class Blueprint:
                         self.targetCoveredCells += 1
 
     def getCellNeighbours(self, coord):
-        """ Returned neighbours do not include walls """
+        """
+        Returned neighbours do not include walls.
+        """
         neighbours = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
 
         if coord[0] == 0:
@@ -96,7 +98,7 @@ class Blueprint:
     def atGrid(self, x, y=None):
         """
         Returns the content of a position of the grid.
-        Accepts one parameter only when it's a tuple
+        Accepts one parameter only when it's a tuple.
         """
         try:
             if type(x) == tuple or type(x) == list:
@@ -141,10 +143,16 @@ class Blueprint:
         return atGrid != '#'
 
     def reset(self):
+        """
+        Resets MST and cells coverage dictionaries.
+        """
         self.msts = {}
         self.cellsCoverage = {}
 
     def printSolutionPaths(self, solution):
+        """
+        Prints in the blueprint the paths from the backbone to the routers.
+        """
         path = self.accessMstPathsDict(solution)
         print("Distance: " + str(len(path)))
 
@@ -168,6 +176,10 @@ class Blueprint:
         print(gridStr)
 
     def printSolutionCoverage(self, solution):
+        """
+        Prints in the blueprint the router and the cells covered by them.
+        """
+
         cellsCovered = self.getSolutionCoveredCells(solution)
         print("Cells covered: " + str(len(cellsCovered)))
 
@@ -190,12 +202,15 @@ class Blueprint:
         print(gridStr)
 
     def getMaxRouters(self) -> int:
+        """
+        Returns the maximum routers possible in a solution, considering budget and router cost.
+        """
         return int(self.budget / self.routerCost)
 
     def getCellCoverage(self, coords):
         """
         Returns a list of the cell coord that would be covered by the router's
-        network if the router was to be put in a certain cell with &coords
+        network if the router was to be put in a certain cell with coords.
         """
         if not self.validPosition(coords):
             return None
@@ -235,25 +250,16 @@ class Blueprint:
 
     def getAllCellsCoverage(self):
         """
-        Gets the router's network coverage for all cells
+        Gets the router's network coverage for all cells.
         """
         for x in range(self.width):
             for y in range(self.height):
                 cellsCovered = self.getCellCoverage((x, y))
                 self.cellsCoverage[(x, y)] = cellsCovered
 
-    # def getSolutionPathsDistPrediction(self, solution):
-    #     """
-    #     :param solution: Solution needs to be valid!!!
-    #     :return: list of backbone cells
-    #     """
-    #     mst = self.accessPathsDict(solution)
-    #     return mst.calcCostPrediction()
-
     def getSolutionCoveredCells(self, solution):
         """
-        :param solution: Solution needs to be valid!!!
-        :return: list of covered cells
+        Returns a list of cells covered by all routers in a solution.
         """
         cells = []
         for router in solution:
@@ -264,6 +270,9 @@ class Blueprint:
         return cells
 
     def accessCoverageDict(self, router):
+        """
+        Returns a number of covered cells by one router.
+        """
         try:
             coverage = self.cellsCoverage[router]
             return coverage
@@ -273,6 +282,9 @@ class Blueprint:
             return coverage
 
     def accessMstDict(self, solution):
+        """
+
+        """
         try:
             mst = self.msts[tuple(solution)]
             return mst
@@ -283,6 +295,9 @@ class Blueprint:
             return mst
 
     def accessMstPathsDict(self, solution):
+        """
+        Access or create a path for a given solution.
+        """
         try:
             paths = self.mstPaths[tuple(solution)]
             return paths
@@ -293,14 +308,16 @@ class Blueprint:
             return paths
 
     def printGrid(self):
+        """
+        Prints the actual grid.
+        """
         rowsInStr = []
         for row in self.grid:
             rowsInStr.append(''.join(row))
         gridStr = '\n'.join(rowsInStr)
         print(gridStr)
 
-    def plotSolution(self, solution,
-                     fpath=None):  # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
+    def plotSolution(self, solution, fpath=None):  # https://github.com/sbrodehl/HashCode/blob/master/Final%20Round/Utilities.py#L90
         """
         Coverage plot.
         """

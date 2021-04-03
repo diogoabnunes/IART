@@ -26,11 +26,11 @@ def crossover(sol1, sol2):
 
 def mutation(blueprint, sol):
     """
-    TODO
+    Chooses a number of routers to mutate and replace them with random neighbours.
     """
     r = routersPlaced(sol)
-    routersToRemove = max(1, blueprint.getMaxRouters() // 10)
-    for i in range(routersToRemove):
+    routersToMutate = max(1, blueprint.getMaxRouters() // 10)
+    for i in range(routersToMutate):
         if r == 0:
             break
         sol = randomNeighbour(blueprint, sol, True)[0]
@@ -52,6 +52,8 @@ def generateInitialPopulation(blueprint):
     while iteration < lastIteration:
         print("Generating initial population: " + str(iteration) + "/" + str(lastIteration))
         individualSol = []
+
+        # Generating each solution
         for j in range(blueprint.getMaxRouters()):
             rand = random.randint(0, len(blueprint.validPositions) - 1)
             while True:
@@ -65,6 +67,7 @@ def generateInitialPopulation(blueprint):
             individualSol.append(blueprint.validPositions[rand])
             positionsAdded[rand] = True
 
+            # Check if last router added covered any cell (if it doesn't, it's not needed)
             while len(blueprint.accessCoverageDict(individualSol[-1])) == 0:
                 individualSol.pop()
                 rand = random.randint(0, len(blueprint.validPositions) - 1)
@@ -78,11 +81,14 @@ def generateInitialPopulation(blueprint):
 
                 individualSol.append(blueprint.validPositions[rand])
 
+            # Check if the actual routers cover all target covered cells
+            # If so, fill the remaining solution list with (-1, -1)
             if blueprint.targetCoveredCells == len(blueprint.getSolutionCoveredCells(individualSol)):
                 while len(individualSol) < blueprint.getMaxRouters():
                     individualSol.append((-1, -1))
                 break
 
+            # Check if
             if value(blueprint, individualSol) is None:
                 individualSol.pop()
                 while len(individualSol) < blueprint.getMaxRouters():

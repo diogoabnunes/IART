@@ -4,6 +4,13 @@ from utils import *
 
 
 def hillClimbing(blueprint, solution):
+    """
+    Regular Hill climbing algorithm implementation.
+    :param blueprint:
+    :param solution:
+    :return: Returns the best found solution
+    """
+
     maxRouters = getIndiceOfLastNonEmptyRouter(solution) + 1
     solutionValue = value(blueprint, solution)
     print("\nStarting solution value:", solutionValue)
@@ -39,6 +46,11 @@ def hillClimbing(blueprint, solution):
 
 
 def hillClimbingSteepestAscend(blueprint, solution):
+    """
+    Hill climbing steepest ascent implementation.
+    :return: Returns the best found solution
+    """
+
     print("\nStarting solution value:", value(blueprint, solution))
 
     solutionCoveredCells = len(blueprint.getSolutionCoveredCells(solution))

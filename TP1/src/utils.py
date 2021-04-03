@@ -60,9 +60,9 @@ def value(blueprint, solution):  # also checks if solution is valid
     """
    Calculates and returns the value of a solution.
    """
-    t = len(blueprint.getSolutionCoveredCells(solution))
-    N = len(blueprint.accessMstPathsDict(solution))
-    M = routersPlaced(solution)
+    t = len(blueprint.getSolutionCoveredCells(solution)) # t = number of cells covered by wireless connection
+    N = len(blueprint.accessMstPathsDict(solution)) # N = Number of cells connected to the backbone
+    M = routersPlaced(solution) # M = Number of routers
     remainingBudget = blueprint.budget - (N * blueprint.backboneCost + M * blueprint.routerCost)
     if remainingBudget < 0:
         return None
@@ -113,7 +113,7 @@ def validSolution(blueprint, solution):  # doesn't check budget
 
 def generateMaxRoutersSolution(blueprint):
     """
-    Generates a solution using the maximum number of routers for the given budget.
+    Generates a solution using the maximum number of routers.
     """
     solution = []
     auxList = [0] * blueprint.getMaxRouters()
@@ -129,7 +129,8 @@ def generateMaxRoutersSolution(blueprint):
 
 def generateSolution(blueprint):
     """
-    TODO
+    Generates a solution using the maximum number of routers,
+    given the path to all routers and the budget available
     :param blueprint:
     :return:
     """
@@ -190,34 +191,30 @@ def randomNeighbour(blueprint, solution: list, remove=False):  # can return an i
     """
     Given a solution, returns a random neighbour and the respective value.
     """
-    routersNum = routersPlaced(solution)
 
     routerChange = random.randint(0, getIndiceOfLastNonEmptyRouter(solution))
-    coordChange = random.randint(0, 1)
-    upOrDown = random.randint(0, 1)
+
+    while True:
+        upOrDownX = random.randint(-1, 1)
+        upOrDownY = random.randint(-1, 1)
+        if upOrDownX == 0 and upOrDownY == 0:
+            continue
+        break
 
     neighbour = solution.copy()
-
-    add = 0
-    if upOrDown == 1:
-        add = 1
-    elif upOrDown == 0:
-        add = -1
 
     if remove:
         lastIx = getIndiceOfLastNonEmptyRouter(neighbour)
         neighbour[routerChange] = neighbour[lastIx]
         neighbour[lastIx] = (-1, -1)
     else:
-        if coordChange == 0:
-            neighbour[routerChange] = (neighbour[routerChange][0] + add, neighbour[routerChange][1])
-        elif coordChange == 1:
-            neighbour[routerChange] = (neighbour[routerChange][0], neighbour[routerChange][1] + add)
+        neighbour[routerChange] = (neighbour[routerChange][0] + upOrDownX, neighbour[routerChange][1] + upOrDownY)
 
     if not validSolution(blueprint, neighbour):
         return None, None
     neighbourValue = value(blueprint, neighbour)
-    if neighbourValue is None: return None, None
+    if neighbourValue is None:
+        return None, None
     return neighbour, neighbourValue
 
 
