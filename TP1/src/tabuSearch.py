@@ -5,6 +5,13 @@ import utils
 
 
 def getTabuStructure(blueprint,solution):
+    """
+    Initializes the tabu data structure
+    :param blueprint:
+    :param solution:
+    :return: Returns a dictionnary with tuples of the format (routerNumber, xOrY, upOrDown, numberOfRouters) as keys
+    """
+
     dict = {}
     index = 0
     for i in solution:
@@ -24,7 +31,13 @@ def getTabuStructure(blueprint,solution):
 
 
 def tabuSearch(blueprint, solution):
-    # Parameters
+    """
+    Implementation of tabu search algorithm
+    :param blueprint:
+    :param solution:
+    :return: Returns the best found solution of router coords
+    """
+
     tabuTenure = 10
     tabuStructure = getTabuStructure(blueprint, solution)
     bestSolution = solution
@@ -88,13 +101,9 @@ def tabuSearch(blueprint, solution):
 if __name__ == "__main__":
     blueprint = bp.Blueprint("../inputs/example.in")
 
-    while True:
-        solution = utils.generateMaxRoutersSolution(blueprint)
-        if not utils.validSolution(blueprint, solution):
-            continue
-        if utils.value(blueprint, solution) is None:
-            continue
-        break
+
+    solution = utils.generateSolution(blueprint)
+
 
     print("Before Tabu Search:", solution, ":", utils.value(blueprint, solution))
 

@@ -52,7 +52,7 @@ def menu():
 
         print("Choose algorithm to run")
         print("[1] Simulated Annealing")
-        print("[2] Hill Climbing: Normal")
+        print("[2] Hill Climbing: Regular")
         print("[3] Hill Climbing: Steepest Ascend")
         print("[4] Genetic Algorithm")
         print("[5] Tabu Search")
@@ -63,30 +63,33 @@ def menu():
 
         startTime = time.time()
         if val == str(1):
-            print("Generating inital solution...")
+            print("Generating initial solution...")
             solution = utils.generateSolution(blueprint)
-            print("Generated inital solution.")
+            print("Generated initial solution.")
             simulatedAnnealing()
             algorithmName = "annealing"
         elif val == str(2):
-            print("Generating inital solution...")
+            print("Generating initial solution...")
             solution = utils.generateSolution(blueprint)
-            print("Generated inital solution.")
+            print("Generated initial solution.")
             solution = hillClimbing.hillClimbing(blueprint, solution)
             algorithmName = "hill_climbing_regular"
         elif val == str(3):
-            print("Generating inital solution...")
+            print("Generating initial solution...")
+            startSteep = time.time()
             solution = utils.generateSolution(blueprint)
-            print("Generated inital solution.")
+            endSteep = time.time()
+            print(f"\nTime: {endSteep - startSteep} seconds\n")
+            print("Generated initial solution.")
             solution = hillClimbing.hillClimbingSteepestAscend(blueprint, solution)
             algorithmName = "hill_climbing_steepest"
         elif val == str(4):
             solution = geneticAlgorithm.geneticAlgorithm(blueprint)
             algorithmName = "genetic"
         elif val == str(5):
-            print("Generating inital solution...")
+            print("Generating initial solution...")
             solution = utils.generateSolution(blueprint)
-            print("Generated inital solution.")
+            print("Generated initial solution.")
             solution = tabuSearch.tabuSearch(blueprint, solution)
             algorithmName = "tabu"
         elif val == str(0):
@@ -99,13 +102,13 @@ def menu():
         outFileName = file.split("/")
         outFileName = outFileName[-1]
         outFileName = outFileName.split(".")
-        outFileName = outFileName[0] + "_" + algorithmName
+        outFileName = outFileName[0] + "/" + algorithmName
 
         blueprint.printSolutionCoverage(solution)
         blueprint.printSolutionPaths(solution)
         print(f"\nTime: {endTime - startTime} seconds\n")
         blueprint.plotSolution(solution, "../out/" + outFileName + ".png")
-        utils.printSolToFile(solution, endTime - startTime, "../out/" + outFileName + ".txt")
+        utils.printSolToFile(solution, endTime - startTime, blueprint, "../out/" + outFileName + ".txt")
 
         print("------------------------------------------------------------------------------------------------")
 
