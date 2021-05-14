@@ -1,6 +1,6 @@
-Solution value: 61010
-Remaining budget: 10
-Execution time: 0.008009195327758789s
+Solution value: 49009
+Remaining budget: 9
+Execution time: 0.011002063751220703s
 
-(6, 6)
-(3, 12)
+(1, 13)
+(0, 5)
