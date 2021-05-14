@@ -10,3 +10,10 @@ IART | TP2 | Group 44
 ## How to run (TO DO)
     
 ## How to use the program (TO DO)
+
+## Links to see:
+- https://github.com/charlie6118/HAHackathonRIGA
+- https://github.com/Smolky/hahackathon-2021
+- https://github.com/Anisha-Kakwani/Hahackathon---Detecting-Rating-Humor-Offense
+- https://github.com/SwarnaLathaNatarajan/SemEval-2021-Task-7-Hahackathon
+- https://github.com/04mayukh/YoungSheldon-at-SemEval-2021-Task-7-HaHackathon
